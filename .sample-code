@@ -1,0 +1,47 @@
+import { switchMap } from 'rxjs/operators';
+
+export class helper {
+
+  // In a component or service...
+  fetchUserAndPosts() {
+    this.userClient.getUser(1).pipe(
+      // switchMap cancels the previous inner observable if the outer one emits again
+      switchMap(user => {
+        // Use the user's id to make the next call
+        return this.postClient.getPostsForUser(user.id);
+      })
+    ).subscribe({
+      next: posts => {
+        console.log('Here are the posts:', posts);
+        this.posts = posts;
+      },
+      error: err => {
+        console.error('Something went wrong:', err);
+      }
+    });
+  }
+
+
+// In a component or service...
+async fetchUserAndPosts() {
+  try {
+    console.log('Fetching user...');
+    // 1. Await the promise from the first API call
+    const user = await firstValueFrom(this.userClient.getUser(1));
+
+    console.log('User found:', user.name, '...fetching their posts.');
+    // 2. Await the promise from the second API call, using the first result
+    const posts = await firstValueFrom(this.postClient.getPostsForUser(user.id));
+
+    console.log('Here are the posts:', posts);
+    this.posts = posts;
+
+  } catch (error) {
+    // A single try/catch block handles errors from any awaited call
+    console.error('Something went wrong:', error);
+  }
+}
+
+}
+
+

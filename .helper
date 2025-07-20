@@ -1,0 +1,21 @@
+UPDATE ANGULAR CLI VERSION
+  npm uninstall -g @angular/cli
+  npm install -g @angular/cli@{version-number}
+
+CREATE NEW PROJECT
+  ng new sysm-dev-sync-ui --no-standalone
+
+DEPENDENCIES TO INSTALL
+  npm i primeng@20.0.0-rc.1 @primeuix/themes
+  npm i primeicons
+  npm i tailwindcss @tailwindcss/postcss postcss
+  npm i tailwindcss-primeui
+  npm i --save-dev @angular-devkit/build-angular karma karma-chrome-launcher karma-coverage karma-jasmine jasmine-core --force
+
+CONFIGURATION (USE THIS PROJECT AS EXAMPLE)
+  1 - CREATE tailwind.css FILE
+  2 - IMPORT tailwind.css FILE ON styles.scss with @use './tailwind.css';
+  3 - CREATE .postcssrc.json FILE
+  4 - IMPORT ON app-module.ts FILE THE MODULE: BrowserAnimationsModule
+  5 - ADD ON app-module.ts FILE IN PROVIDE SECTOR THESE ENTRIES: provideAnimationsAsync(), providePrimeNG
+

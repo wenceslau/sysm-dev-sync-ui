@@ -1,27 +1,22 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpApp, RequestData} from '../http-app';
 import {firstValueFrom, Observable} from 'rxjs';
+import {AbstractClient} from './abstract-client';
 
 export interface Tag {
   id: number;
   name: string;
+  color: string;
+  description: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class TagClient {
+export class TagClient extends AbstractClient<Tag> {
 
-  private httpApp = inject(HttpApp);
-
-  getTags(): Observable<Tag> {
-    const params = new RequestData();
-    params.path = '/tags/1';
-
-    return this.httpApp.get<Tag>(params);
+  constructor() {
+    super('/tags');
   }
 
-  async getTagsAsync(): Promise<Tag> {
-    return await firstValueFrom(this.getTags());
-  }
 }

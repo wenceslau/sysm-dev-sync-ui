@@ -42,7 +42,7 @@ export class HttpApp {
   }
 
   private executeHttpRequest<T>(requestData: RequestData): Observable<T> {
-    const httpUrlPath = `${this.apiUrl}${requestData.path || ''}`;
+    const httpUrlPath = `${this.apiUrl}${requestData.mapping || ''}`;
     const options = {
       headers: this.getHeaders(requestData),
       params: requestData.httpParams
@@ -75,10 +75,10 @@ export class HttpApp {
     // Use the pipe operator for side-effects (logging) and error handling
     return request$.pipe(
       tap(response => {
-        console.log(`HTTP Success: ${requestData.httpVerb} ${requestData.path}`, response);
+        console.log(`HTTP Success: ${requestData.httpVerb} ${requestData.mapping}`, response);
       }),
       catchError(error => {
-        console.error(`HTTP Error: ${requestData.httpVerb} ${requestData.path}`, error);
+        console.error(`HTTP Error: ${requestData.httpVerb} ${requestData.mapping}`, error);
         // Re-throw the error so the calling component can handle it
         return throwError(() => error);
       })
@@ -109,8 +109,17 @@ export class RequestData {
   public contentType: ContentType = ContentType.JSON;
   public customHeaders: Map<string, string> = new Map();
   public payload: any;
-  public path: string = "";
+  public mapping: string = "";
   public blob: boolean = false;
+
+  constructor(mapping?: string, payload?: any) {
+    if (mapping) {
+      this.mapping = mapping;
+    }
+    if (payload) {
+      this.payload = payload;
+    }
+  }
 
   addParameter(key: string, value: any) {
     this.httpParams = this.httpParams.append(key, value);

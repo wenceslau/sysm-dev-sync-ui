@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { HttpApp, RequestData, HttpVerb, ContentType } from './http-app';
+import { HttpApp, RequestData, ContentType } from './http-app';
 
 // Suggestion 1: Define an interface for your mock data
 interface MockData {
@@ -39,7 +39,7 @@ describe('HttpApp', () => {
       const testPath = '/test-get';
 
       const requestData = new RequestData();
-      requestData.path = testPath;
+      requestData.mapping = testPath;
 
       // Use the strong type <MockData> instead of <any>
       service.get<MockData>(requestData).subscribe(data => {
@@ -61,7 +61,7 @@ describe('HttpApp', () => {
       const testPath = '/test-post';
 
       const requestData = new RequestData();
-      requestData.path = testPath;
+      requestData.mapping = testPath;
       requestData.payload = testPayload;
 
       service.post<MockData>(requestData).subscribe(response => {
@@ -82,7 +82,7 @@ describe('HttpApp', () => {
 
     beforeEach(() => {
       requestData = new RequestData();
-      requestData.path = testPath;
+      requestData.mapping = testPath;
     });
 
     it('should add Content-Type and custom headers to the request', () => {
@@ -105,7 +105,7 @@ describe('HttpApp', () => {
       const errorMessage = '404 Not Found';
 
       const requestData = new RequestData();
-      requestData.path = testPath;
+      requestData.mapping = testPath;
 
       service.get<any>(requestData).subscribe({
         next: () => fail('should have failed with a 404 error'),

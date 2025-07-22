@@ -4,7 +4,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import { HttpApp, RequestData, ContentType } from './http-app';
 
-// Suggestion 1: Define an interface for your mock data
 interface MockData {
   id: number;
   name: string;
@@ -41,10 +40,8 @@ describe('HttpApp', () => {
       const requestData = new RequestData();
       requestData.mapping = testPath;
 
-      // Use the strong type <MockData> instead of <any>
       service.get<MockData>(requestData).subscribe(data => {
         expect(data).toEqual(testData);
-        // You can now safely access properties without compiler warnings
         expect(data.id).toBe(1);
       });
 
@@ -76,7 +73,6 @@ describe('HttpApp', () => {
   });
 
   describe('Header Handling', () => {
-    // Suggestion 2: Use a beforeEach for repetitive setup
     let requestData: RequestData;
     const testPath = '/test-headers';
 

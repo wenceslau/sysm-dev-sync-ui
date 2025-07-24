@@ -1,2 +1,15 @@
 @use './tailwind.css';
 @use "primeicons/primeicons.css";
+
+//:root {
+//  --my-color-primary: var(--color-primary);
+//  --my-color-primary-50: var(--color-primary-50);
+//}
+
+.bg-primary-color {
+  background-color: var(--color-primary);
+}
+
+.bg-primary-color-50 {
+  background-color: var(--color-primary-50);
+}

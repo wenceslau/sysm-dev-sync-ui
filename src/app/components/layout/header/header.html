@@ -1,0 +1,53 @@
+<header class="fixed top-0 z-50 flex w-full items-center justify-between text-white h-20 bg-primary-color">
+
+  <div class="flex w-full justify-between bg-gradient-to-t from-transparent transition-all p-2 px-4 lg:px-16 lg:py-2
+    lg:mx-[10%] ">
+
+    <div class="flex items-center space-x-2 md:space-x-20">
+
+      <a (click)="goToPage('home')" href="javascript:void(0)">
+        <img alt="dev-sync" class="cursor-pointer" height="36" src="/images/dev-sync-logo.white.svg" width="150px"/>
+      </a>
+
+      <nav>
+        <ul class="flex space-x-8">
+          <li class="hover:text-gray-300">
+            <a (click)="goToPage('question')" href="javascript:void(0)">Questions</a>
+          </li>
+          <li class="hidden md:block lg:block hover:text-gray-300">
+            <a (click)="goToPage('project')" href="javascript:void(0)">Projects</a>
+          </li>
+          <li class="hidden md:block lg:block hover:text-gray-300">
+            <a (click)="goToPage('workspace')" href="javascript:void(0)">Workspaces</a>
+          </li>
+          <li class="hover:text-gray-300">
+            <a (click)="goToPage('tag')" href="javascript:void(0)">Tags</a>
+          </li>
+          <li class="hover:text-gray-300">
+            <a (click)="goToPage('user')" href="javascript:void(0)">Users</a>
+          </li>
+        </ul>
+      </nav>
+
+    </div>
+
+    <div class="flex items-center space-x-2 md:space-x-8">
+      <div>
+        <p-iconfield>
+          <p-inputicon class="pi pi-search"/>
+          <input pInputText pSize="small" placeholder="Search" type="text"/>
+        </p-iconfield>
+      </div>
+      <div>
+        <p-overlaybadge severity="danger" value="">
+          <p-avatar class="mr-2" label="WN" size="normal"/>
+        </p-overlaybadge>
+      </div>
+      <div>
+      </div>
+    </div>
+
+  </div>
+
+</header>
+

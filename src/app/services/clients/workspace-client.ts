@@ -20,7 +20,8 @@ export interface Workspace {
 export class WorkspaceClient extends AbstractClient<Workspace>{
 
   constructor() {
-    super('/workspaces');
+    super();
+    this.setReqMapping('/workspaces');
   }
 
   /**

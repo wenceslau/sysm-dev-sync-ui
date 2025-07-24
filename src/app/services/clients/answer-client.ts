@@ -20,7 +20,8 @@ export interface Answer {
 export class AnswerClient extends AbstractClient<Answer> {
 
   constructor() {
-    super('/answers');
+    super();
+    this.setReqMapping('/answers');
   }
 
   override getById(id: string): Observable<Answer> {

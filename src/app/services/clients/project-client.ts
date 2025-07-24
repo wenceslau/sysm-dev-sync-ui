@@ -19,7 +19,8 @@ export interface Project {
 export class ProjectClient extends AbstractClient<Project> {
 
   constructor() {
-    super('/projects');
+    super();
+    this.setReqMapping('/projects');
   }
 
   override getById(id: string): Observable<Project> {

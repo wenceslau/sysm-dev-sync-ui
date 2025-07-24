@@ -22,7 +22,8 @@ export interface Note {
 export class NoteClient extends AbstractClient<Note> {
 
   constructor() {
-    super('/notes');
+    super();
+    this.setReqMapping('/notes');
   }
 
   override getById(id: string): Observable<Note> {

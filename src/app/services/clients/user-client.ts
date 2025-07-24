@@ -22,6 +22,7 @@ export enum UserRole {
 export class UserClient extends AbstractClient<User> {
 
   constructor() {
-    super('/users');
+    super();
+    this.setReqMapping('/users');
   }
 }

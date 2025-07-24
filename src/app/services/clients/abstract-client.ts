@@ -15,34 +15,34 @@ export interface SearchRequest {
 })
 export class AbstractClient<T> {
 
-  protected httpApp = inject(HttpApp);
-  protected readonly reqMapping: string;
+  private _httpApp = inject(HttpApp);
+  protected reqMapping: string | undefined;
 
-  constructor(reqMapping: string) {
-    this.reqMapping = reqMapping;
+  protected setReqMapping(value: string) {
+    this.reqMapping = value;
   }
 
   save(payload: T): Observable<T> {
     const reqData = new RequestData(this.reqMapping);
     reqData.payload = payload;
-    return this.httpApp.post<T>(reqData);
+    return this._httpApp.post<T>(reqData);
   }
 
   update(id: string, payload: T): Observable<T> {
     const reqData = new RequestData(`${this.reqMapping}/${id}`);
     reqData.payload = payload;
-    return this.httpApp.put<T>(reqData);
+    return this._httpApp.put<T>(reqData);
   }
 
   updatePatch(id: string, payload: Partial<T>): Observable<T> {
     const reqData = new RequestData(`${this.reqMapping}/${id}`);
     reqData.payload = payload;
-    return this.httpApp.patch<T>(reqData);
+    return this._httpApp.patch<T>(reqData);
   }
 
   delete(id: string): Observable<void> {
     const reqData = new RequestData(`${this.reqMapping}/${id}`);
-    return this.httpApp.delete<void>(reqData);
+    return this._httpApp.delete<void>(reqData);
   }
 
   list(search: SearchRequest): Observable<T[]> {
@@ -64,12 +64,12 @@ export class AbstractClient<T> {
         reqData.addParameter(key, value);
       });
     }
-    return this.httpApp.get<T[]>(reqData);
+    return this._httpApp.get<T[]>(reqData);
   }
 
   getById(id: string): Observable<T> {
     const reqData = new RequestData(`${this.reqMapping}/${id}`);
-    return this.httpApp.get<T>(reqData);
+    return this._httpApp.get<T>(reqData);
   }
 
   async saveAsync(payload: T): Promise<T> {

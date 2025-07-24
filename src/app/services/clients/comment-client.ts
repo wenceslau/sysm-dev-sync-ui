@@ -26,7 +26,8 @@ export enum TargetType {
 export class CommentClient extends AbstractClient<Comment> {
 
   constructor() {
-    super('/comments');
+    super();
+    this.setReqMapping('/comments');
   }
 
   override getById(id: string): Observable<Comment> {

@@ -16,7 +16,8 @@ export interface Tag {
 export class TagClient extends AbstractClient<Tag> {
 
   constructor() {
-    super('/tags');
+    super();
+    this.setReqMapping('/tags');
   }
 
 }

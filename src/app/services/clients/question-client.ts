@@ -26,7 +26,8 @@ export enum QuestionStatus {
 export class QuestionClient extends AbstractClient<Question> {
 
   constructor() {
-    super('/questions');
+    super();
+    this.setReqMapping('/questions');
   }
 
   override getById(id: string): Observable<Question> {

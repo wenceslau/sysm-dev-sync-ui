@@ -29,7 +29,6 @@ import {OverlayBadge} from 'primeng/overlaybadge';
 import {Avatar} from 'primeng/avatar';
 import { Footer } from './components/layout/footer/footer';
 import { Home } from './components/home/home';
-import { Tag } from './components/tag/tag';
 import { Users } from './components/users/users';
 import { Questions } from './components/questions/questions';
 import { Projects } from './components/projects/projects';
@@ -60,7 +59,6 @@ const MyPreset = definePreset(Aura, {
     Header,
     Footer,
     Home,
-    Tag,
     Users,
     Questions,
     Projects,
@@ -98,7 +96,6 @@ const MyPreset = definePreset(Aura, {
     providePrimeNG({
       theme: {
         preset: MyPreset,
-        // primary: 'indigo',
         options: {darkModeSelector: '.p-dark'},
       }
     })

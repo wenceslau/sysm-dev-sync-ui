@@ -10,7 +10,7 @@ import {providePrimeNG} from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 import {Menubar} from 'primeng/menubar';
 import {PanelMenu} from 'primeng/panelmenu';
-import {CommonModule} from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {StyleClassModule} from 'primeng/styleclass';
 import {FormsModule} from '@angular/forms';
 import {SelectButtonModule} from 'primeng/selectbutton';
@@ -20,10 +20,52 @@ import {RadioButtonModule} from 'primeng/radiobutton';
 import {RippleModule} from 'primeng/ripple';
 import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {authInterceptor} from './services/security/auth-interceptor';
+import { Header } from './components/layout/header/header';
+import {definePreset} from '@primeuix/themes';
+import {IconField} from 'primeng/iconfield';
+import {InputIcon} from 'primeng/inputicon';
+import {InputText} from 'primeng/inputtext';
+import {OverlayBadge} from 'primeng/overlaybadge';
+import {Avatar} from 'primeng/avatar';
+import { Footer } from './components/layout/footer/footer';
+import { Home } from './components/home/home';
+import { Tag } from './components/tag/tag';
+import { Users } from './components/users/users';
+import { Questions } from './components/questions/questions';
+import { Projects } from './components/projects/projects';
+import { Workspaces } from './components/workspaces/workspaces';
+import { Tags } from './components/tags/tags';
+
+const MyPreset = definePreset(Aura, {
+  semantic: {
+    primary: {
+      50: '{indigo.50}',
+      100: '{indigo.100}',
+      200: '{indigo.200}',
+      300: '{indigo.300}',
+      400: '{indigo.400}',
+      500: '{indigo.500}',
+      600: '{indigo.600}',
+      700: '{indigo.700}',
+      800: '{indigo.800}',
+      900: '{indigo.900}',
+      950: '{indigo.950}'
+    }
+  }
+});
 
 @NgModule({
   declarations: [
     App,
+    Header,
+    Footer,
+    Home,
+    Tag,
+    Users,
+    Questions,
+    Projects,
+    Workspaces,
+    Tags,
   ],
   imports: [
     BrowserModule,
@@ -42,6 +84,12 @@ import {authInterceptor} from './services/security/auth-interceptor';
     RadioButtonModule,
     RippleModule,
     ButtonModule,
+    IconField,
+    InputIcon,
+    InputText,
+    OverlayBadge,
+    Avatar,
+    NgOptimizedImage,
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
@@ -49,7 +97,8 @@ import {authInterceptor} from './services/security/auth-interceptor';
     provideHttpClient(withInterceptors([authInterceptor])),
     providePrimeNG({
       theme: {
-        preset: Aura,
+        preset: MyPreset,
+        // primary: 'indigo',
         options: {darkModeSelector: '.p-dark'},
       }
     })

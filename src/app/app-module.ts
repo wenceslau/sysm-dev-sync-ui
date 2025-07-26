@@ -34,6 +34,11 @@ import { Questions } from './components/questions/questions';
 import { Projects } from './components/projects/projects';
 import { Workspaces } from './components/workspaces/workspaces';
 import { Tags } from './components/tags/tags';
+import {DataViewModule} from 'primeng/dataview';
+import {Divider} from 'primeng/divider';
+import {Toolbar} from 'primeng/toolbar';
+import {ProgressSpinner} from 'primeng/progressspinner';
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
 
 const MyPreset = definePreset(Aura, {
   semantic: {
@@ -88,6 +93,11 @@ const MyPreset = definePreset(Aura, {
     OverlayBadge,
     Avatar,
     NgOptimizedImage,
+    DataViewModule,
+    Divider,
+    Toolbar,
+    ProgressSpinner,
+    ProgressSpinnerModule
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),

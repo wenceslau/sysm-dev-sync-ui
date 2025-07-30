@@ -7,7 +7,15 @@ export interface SearchRequest {
   pageSize?: number,
   sort?: string,
   direction?: string,
+  queryType?: string,
   filters?: Map<string, string>
+}
+
+export interface Pageable {
+  currentPage: number,
+  perPage: number,
+  total: number,
+  items: any[]
 }
 
 @Injectable({
@@ -46,25 +54,14 @@ export class AbstractClient<T> {
   }
 
   list(search: SearchRequest): Observable<T[]> {
-    const reqData = new RequestData(this.reqMapping);
-    if(search.pageNumber !== undefined){
-      reqData.addParameter('pageNumber', search.pageNumber);
-    }
-    if(search.pageSize !== undefined){
-      reqData.addParameter('pageSize', search.pageSize);
-    }
-    if(search.sort){
-      reqData.addParameter('sort', search.sort);
-    }
-    if(search.direction){
-      reqData.addParameter('direction', search.direction);
-    }
-    if(search.filters){
-      search.filters.forEach((value, key) => {
-        reqData.addParameter(key, value);
-      });
-    }
+    const reqData = this.prepareRequestData(search);
+
     return this._httpApp.get<T[]>(reqData);
+  }
+
+  page(search: SearchRequest): Observable<Pageable> {
+    const reqData = this.prepareRequestData(search);
+    return this._httpApp.get<Pageable>(reqData);
   }
 
   getById(id: string): Observable<T> {
@@ -92,7 +89,37 @@ export class AbstractClient<T> {
     return await firstValueFrom(this.list(search));
   }
 
+  async pageAsync(search: SearchRequest): Promise<Pageable> {
+    return await firstValueFrom(this.page(search));
+  }
+
   async getByIdAsync(id: string): Promise<T> {
     return await firstValueFrom(this.getById(id));
   }
+
+  private prepareRequestData(search: SearchRequest) {
+    const reqData = new RequestData(this.reqMapping);
+    if (search.pageNumber !== undefined) {
+      reqData.addParameter('pageNumber', search.pageNumber);
+    }
+    if (search.pageSize !== undefined) {
+      reqData.addParameter('pageSize', search.pageSize);
+    }
+    if (search.sort) {
+      reqData.addParameter('sort', search.sort);
+    }
+    if (search.direction) {
+      reqData.addParameter('direction', search.direction);
+    }
+    if (search.queryType) {
+      reqData.addParameter('queryType', search.queryType);
+    }
+    if (search.filters) {
+      search.filters.forEach((value, key) => {
+        reqData.addParameter(key, value);
+      });
+    }
+    return reqData;
+  }
+
 }

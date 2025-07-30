@@ -14,7 +14,7 @@ export class HttpApp {
   private http = inject(HttpClient);
 
   // Consider moving this to your environment files
-  private readonly apiUrl = "http://localhost:8080";
+  private readonly apiUrl = "http://localhost:8081/dev-sync/api";
 
   get<T>(requestData: RequestData): Observable<T> {
     requestData.httpVerb = HttpVerb.GET;

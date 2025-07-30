@@ -6,6 +6,13 @@ export interface Tag {
   name: string;
   color: string;
   description: string;
+  category: string;
+  amountUsed: number;
+}
+
+export interface TagColor {
+  name: string;
+  color: string;
 }
 
 @Injectable({
@@ -18,118 +25,29 @@ export class TagClient extends AbstractClient<Tag> {
     this.setReqMapping('/tags');
   }
 
-  /**
-   * A new async mock method that simulates a real API call by returning a Promise.
-   */
-  async mockAsync(): Promise<Tag[]> {
-    console.log('Fetching mock data asynchronously...');
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve(this.mock());
-      }, 500); // Simulate a 500ms network delay
-    });
-  }
-
-  mock() {
+  tagColors(): TagColor[] {
     return [
-        {
-          id: 1,
-          name: 'java',
-          color: 'red',
-          description: 'Tag 1 description xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxcccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc'
-        },
-        {
-          id: 2,
-          name: 'angular',
-          color: 'blue',
-          description: 'Tag 2 description cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc'
-        },
-        {
-          id: 3,
-          name: 'node',
-          color: 'green',
-          description: 'Tag 3 description xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-        },
-        {
-          id: 4,
-          name: 'react',
-          color: 'yellow',
-          description: 'Tag 4 description cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc'
-        },
-      {
-        id: 1,
-        name: 'java',
-        color: 'red',
-        description: 'Tag 1 description xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-      },
-      {
-        id: 2,
-        name: 'angular',
-        color: 'blue',
-        description: 'Tag 2 description cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc'
-      },
-      {
-        id: 3,
-        name: 'node',
-        color: 'green',
-        description: 'Tag 3 description xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-      },
-      {
-        id: 4,
-        name: 'react',
-        color: 'yellow',
-        description: 'Tag 4 description cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc'
-      },
-      {
-        id: 1,
-        name: 'java',
-        color: 'red',
-        description: 'Tag 1 description xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-      },
-      {
-        id: 2,
-        name: 'angular',
-        color: 'blue',
-        description: 'Tag 2 description cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc'
-      },
-      {
-        id: 3,
-        name: 'node',
-        color: 'green',
-        description: 'Tag 3 description xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-      },
-      {
-        id: 4,
-        name: 'react',
-        color: 'yellow',
-        description: 'Tag 4 description cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc'
-      },
-      {
-        id: 1,
-        name: 'java',
-        color: 'red',
-        description: 'Tag 1 description xxxxxxxxxxxxxxxxxxxxxxxsfdxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxasaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-      },
-      {
-        id: 2,
-        name: 'angular',
-        color: 'blue',
-        description: 'Tag 2 description cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc'
-      },
-      {
-        id: 3,
-        name: 'node',
-        color: 'green',
-        description: 'Tag 3 description xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-      },
-      {
-        id: 4,
-        name: 'react',
-        color: 'yellow',
-        description: 'Tag 4 description cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc'
-      }
-    ];
+      {name: "white", color: "#ffffff"},
+      {name: "black", color: "#000000"},
+      {name: "red", color: "#ff0000"},
+      {name: "green", color: "#00ff00"},
+      {name: "blue", color: "#0000ff"},
+      {name: "yellow", color: "#ffff00"},
+      {name: "purple", color: "#ff00ff"},
+      {name: "orange", color: "#ffa500"},
+      {name: "pink", color: "#ffc0cb"},
+      {name: "brown", color: "#a52a2a"},
+      {name: "gray", color: "#808080"},
+      {name: "cyan", color: "#00ffff"},
+      {name: "magenta", color: "#ff00ff"},
+      {name: "lime", color: "#00ff00"},
+      {name: "teal", color: "#008080"},
+      {name: "olive", color: "#808000"},
+      {name: "navy", color: "#000080"},
+      {name: "nblue", color: "#2496ED"}
+    ]
 
   }
+
 
 }

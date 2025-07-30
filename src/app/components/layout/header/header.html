@@ -11,20 +11,21 @@
 
       <nav>
         <ul class="flex space-x-8">
-          <li class="hover:text-gray-300">
-            <a (click)="goToPage('question')" href="javascript:void(0)">Questions</a>
+          <li class="hover:text-gray-300 hover:scale-110">
+            <a routerLink="question" routerLinkActive="text-gray-300 font-semibold">Questions</a>
           </li>
-          <li class="hidden md:block lg:block hover:text-gray-300">
-            <a (click)="goToPage('project')" href="javascript:void(0)">Projects</a>
+          <li class="hover:text-gray-300 hover:scale-110">
+            <a routerLink="project" routerLinkActive="text-gray-300 font-semibold">Projects</a>
           </li>
-          <li class="hidden md:block lg:block hover:text-gray-300">
-            <a (click)="goToPage('workspace')" href="javascript:void(0)">Workspaces</a>
+          <li class="hover:text-gray-300 hover:scale-110">
+            <a routerLink="workspace" routerLinkActive="text-gray-300 font-semibold">Workspaces</a>
           </li>
-          <li class="hover:text-gray-300">
-            <a (click)="goToPage('tag')" href="javascript:void(0)">Tags</a>
+
+          <li class="hover:text-gray-300 hover:scale-110">
+            <a routerLink="tag" routerLinkActive="text-gray-300 font-semibold">Tags</a>
           </li>
-          <li class="hover:text-gray-300">
-            <a (click)="goToPage('user')" href="javascript:void(0)">Users</a>
+          <li class="hover:text-gray-300 hover:scale-110">
+            <a routerLink="user" routerLinkActive="text-gray-300 font-semibold">Users</a>
           </li>
         </ul>
       </nav>
@@ -35,7 +36,7 @@
       <div>
         <p-iconfield>
           <p-inputicon class="pi pi-search"/>
-          <input pInputText pSize="small" placeholder="Search" type="text"/>
+          <input pInputText pSize="small" placeholder="Global search" type="text"/>
         </p-iconfield>
       </div>
       <div>

@@ -19,31 +19,37 @@
   <div class=" w-1/2 z-10 top-[50%] lg:right-[12%] sm:right-5 justify-center items-center hover:scale-105"
        id="divToolbar2">
     <p-toolbar [style]="{ 'border-radius': '3rem', 'padding': '1rem 1rem 1rem 1rem' }">
-      <input (input)="onSearchInput()" [(ngModel)]="searchValue" class="w-full text-center" pInputText
-             pSize="small"
-             placeholder="Tag search" type="text"/>
+      <p-iconfield class="w-full">
+        <input (input)="onSearchInput()" [(ngModel)]="searchValue" class="w-full text-center" pInputText
+               pSize="small"
+               placeholder="Tag search" type="text"/>
+        @if (searchValue) {
+          <p-inputicon class="pi pi-times cursor-pointer" (click)="searchValue = ''; loadingTags()"/>
+        }
+      </p-iconfield>
     </p-toolbar>
   </div>
 
 
   <div class="w-2/3" id="divDataView">
 
-    <!-- Show a loading indicator while fetching data -->
-    @if (isLoading) {
-      <div class="flex justify-center items-center py-20">
-        <p-progressSpinner aria-label="Loading Tags"/>
-      </div>
-    }
-    <!-- Show the data view once loading is complete -->
-    @if (!isLoading) {
-      <p-data-view #dv [value]="tags">
+<!--    &lt;!&ndash; Show a loading indicator while fetching data &ndash;&gt;-->
+<!--    @if (isLoading) {-->
+<!--      <div class="flex justify-center items-center py-20">-->
+<!--        <p-progressSpinner aria-label="Loading Tags"/>-->
+<!--      </div>-->
+<!--    }-->
+<!--    &lt;!&ndash; Show the data view once loading is complete &ndash;&gt;-->
+<!--    @if (!isLoading) {-->
+      <p-data-view #dv [value]="tags" [rows]="rowsPage" [lazyLoadOnInit]="true" [totalRecords]="totalRecords"
+                   [loading]="isLoading" [paginator]="true" [lazy]="true" (onLazyLoad)="onLazyLoad($event)">
         <ng-template #list let-items>
           <div class="py-6">
 
             @for (tag of items; track tag.id) {
               <!-- The main flex container for a single row -->
               <div
-                class="flex items-center mx-4 p-4 rounded-lg hover:scale-101 cursor-pointer transition-all gap-6 bg-primary-color-50">
+                class="flex items-center mx-4 p-4 rounded-lg hover:scale-101 transition-all gap-6 bg-primary-color-50">
 
                 <!-- 1. Icon Column: Prevent this from shrinking -->
                 <div class="flex-shrink-0 flex gap-2 items-center justify-center">
@@ -76,7 +82,7 @@
                 </div>
 
                 <!-- Add an Edit Button Column -->
-                <div class="flex-shrink-0 ml-auto">
+                <div class="flex-shrink-0 ml-auto ">
                   <p-button icon="pi pi-pencil" [text]="true" (click)="editTag(tag)"/>
                 </div>
 
@@ -86,7 +92,7 @@
           </div>
         </ng-template>
       </p-data-view>
-    }
+<!--    }-->
   </div>
 
   <app-form-input></app-form-input>

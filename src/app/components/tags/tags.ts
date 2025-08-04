@@ -4,6 +4,7 @@ import {SignalsApp} from '../../services/signals-app';
 import {Subject, Subscription} from 'rxjs';
 import {debounceTime, distinctUntilChanged, switchMap, tap} from 'rxjs/operators';
 import {SearchRequest} from '../../services/clients/abstract-client';
+import {DataViewLazyLoadEvent} from 'primeng/dataview';
 
 @Component({
   selector: 'app-tags',
@@ -13,15 +14,19 @@ import {SearchRequest} from '../../services/clients/abstract-client';
 })
 export class Tags implements OnInit, OnDestroy {
 
-  tags: Tag[] = [];
+  rowsPage = 10;
+  currentPage = 0;
+  totalRecords = 0;
   isLoading = true;
-  tagClient = inject(TagClient);
-  signalApp = inject(SignalsApp);
   searchValue: string = '';
 
+  tags: Tag[] = [];
+  tagClient = inject(TagClient);
+  signalApp = inject(SignalsApp);
+
   // 1. RxJS Subject to handle search term changes
-  private searchSubject = new Subject<string>();
   private searchSubscription!: Subscription;
+  private searchSubject = new Subject<string>();
 
   constructor() {
     effect(() => {
@@ -48,7 +53,7 @@ export class Tags implements OnInit, OnDestroy {
       // Set loading state before making the API call
       tap(() => this.isLoading = true),
       // Cancel previous pending requests and switch to the new one
-      switchMap(searchTerm => this.tagClient.pageAsync(this.createSearchRequest(searchTerm)))
+      switchMap(searchTerm => this.tagClient.pageAsync(this.createSearchRequest(searchTerm, 0)))
     ).subscribe({
       next: (tagPageable) => {
         this.tags = tagPageable.items;
@@ -68,18 +73,30 @@ export class Tags implements OnInit, OnDestroy {
     }
   }
 
-  // 6. This method is now called from the template on every input change
+  editTag(tag: Tag) {
+    this.signalApp.selectedTag.set(tag);
+    this.signalApp.showTagInput.set(true);
+  }
+
   onSearchInput(): void {
     this.searchSubject.next(this.searchValue);
   }
 
+  onLazyLoad($event: DataViewLazyLoadEvent) {
+    console.log('Lazy load event', $event);
+    this.currentPage = $event.first / $event.rows;
+
+    this.loadingTags();
+  }
+
   // This method is now primarily for initial load and manual refreshes
-  async loadingTags(): Promise<void> {
+  protected async loadingTags(): Promise<void> {
     this.isLoading = true;
     try {
-      const searchRequest = this.createSearchRequest(this.searchValue);
+      const searchRequest = this.createSearchRequest(this.searchValue, this.currentPage);
       const tagPageable = await this.tagClient.pageAsync(searchRequest);
       this.tags = tagPageable.items;
+      this.totalRecords = tagPageable.total;
     } catch (e) {
       console.error('Failed to load tags:', e);
     } finally {
@@ -87,17 +104,12 @@ export class Tags implements OnInit, OnDestroy {
     }
   }
 
-  private createSearchRequest(term: string): SearchRequest {
+  private createSearchRequest(term: string, pageNumber: number): SearchRequest {
     const filters = new Map<string, string>();
     if (term) {
       filters.set('name', term);
       filters.set('description', term);
     }
-    return {queryType: 'or', filters: filters};
-  }
-
-  editTag(tag: Tag) {
-    this.signalApp.selectedTag.set(tag);
-    this.signalApp.showTagInput.set(true);
+    return {queryType: 'or', filters: filters, pageNumber: pageNumber, pageSize: this.rowsPage};
   }
 }

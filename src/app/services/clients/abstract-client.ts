@@ -2,12 +2,12 @@ import {inject, Injectable} from '@angular/core';
 import {HttpApp, RequestData} from '../http-app';
 import {firstValueFrom, Observable} from 'rxjs';
 
-export interface SearchRequest {
-  pageNumber?: number,
-  pageSize?: number,
-  sort?: string,
-  direction?: string,
-  queryType?: string,
+export class SearchRequest {
+  pageNumber?: number;
+  pageSize?: number;
+  sort?: string;
+  direction?: string;
+  queryType?: string;
   filters?: Map<string, string>
 }
 

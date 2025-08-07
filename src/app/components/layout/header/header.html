@@ -1,54 +1,68 @@
-<header class="fixed top-0 z-50 flex w-full items-center justify-between text-white h-20 bg-primary-color">
+<header class="sticky top-0 z-50 w-full bg-white">
+  <div class="flex w-full items-center justify-between text-white p-2 bg-dark-royal-blue">
+    <span>
+      language
+    </span>
+    <span>
+      new here, sign up
+    </span>
+    <span>
+      timezone
+    </span>
+  </div>
 
-  <div class="flex w-full justify-between bg-gradient-to-t from-transparent transition-all p-2 px-4 lg:px-16 lg:py-2
-    lg:mx-[10%] ">
+  <div class="flex w-full items-center justify-between text-dark-royal-blue m8 bg-surface-50 py-4 border-bottom-royal-blue">
 
-    <div class="flex items-center space-x-2 md:space-x-20">
+    <div class="flex w-full justify-between  p-2 px-4 lg:px-16 lg:py-2 lg:mx-[10%] ">
 
-      <a (click)="goToPage('home')" href="javascript:void(0)">
-        <img alt="dev-sync" class="cursor-pointer" height="36" src="/images/dev-sync-logo.white.svg" width="150px"/>
-      </a>
+      <div class="flex items-center space-x-2 md:space-x-20">
 
-      <nav>
-        <ul class="flex space-x-8">
-          <li class="hover:text-gray-300 hover:scale-110">
-            <a routerLink="question" routerLinkActive="text-gray-300 font-semibold">Questions</a>
-          </li>
-          <li class="hover:text-gray-300 hover:scale-110">
-            <a routerLink="project" routerLinkActive="text-gray-300 font-semibold">Projects</a>
-          </li>
-          <li class="hover:text-gray-300 hover:scale-110">
-            <a routerLink="workspace" routerLinkActive="text-gray-300 font-semibold">Workspaces</a>
-          </li>
+        <a (click)="goToPage('home')" href="javascript:void(0)">
+          <img alt="dev-sync" class="cursor-pointer" height="36" src="/images/dev-sync-logo.svg" width="150px"/>
+        </a>
 
-          <li class="hover:text-gray-300 hover:scale-110">
-            <a routerLink="tag" routerLinkActive="text-gray-300 font-semibold">Tags</a>
-          </li>
-          <li class="hover:text-gray-300 hover:scale-110">
-            <a routerLink="user" routerLinkActive="text-gray-300 font-semibold">Users</a>
-          </li>
-        </ul>
-      </nav>
+        <nav>
+          <ul class="flex space-x-8">
+            <li class="hover:scale-110">
+              <a routerLink="question" routerLinkActive="selected-router-link">Questions</a>
+            </li>
+            <li class="hover:scale-110">
+              <a routerLink="project" routerLinkActive="selected-router-link">Projects</a>
+            </li>
+            <li class="hover:scale-110">
+              <a routerLink="workspace" routerLinkActive="selected-router-link">Workspaces</a>
+            </li>
 
-    </div>
+            <li class="hover:scale-110">
+              <a routerLink="tag" routerLinkActive="selected-router-link">Tags</a>
+            </li>
+            <li class="hover:scale-110">
+              <a routerLink="user" routerLinkActive="selected-router-link">Users</a>
+            </li>
+          </ul>
+        </nav>
 
-    <div class="flex items-center space-x-2 md:space-x-8">
-      <div>
-        <p-iconfield>
-          <p-inputicon class="pi pi-search"/>
-          <input pInputText pSize="small" placeholder="Global search" type="text"/>
-        </p-iconfield>
       </div>
-      <div>
-        <p-overlaybadge severity="danger" value="">
-          <p-avatar class="mr-2" label="WN" size="normal"/>
-        </p-overlaybadge>
+
+      <div class="flex items-center space-x-2 md:space-x-8">
+        <div>
+          <p-iconfield>
+            <p-inputicon class="pi pi-search"/>
+            <input pInputText pSize="small" placeholder="Global search" type="text"/>
+          </p-iconfield>
+        </div>
+        <div>
+          <p-overlaybadge severity="danger" value="">
+            <p-avatar class="mr-2" label="WN" size="normal"/>
+          </p-overlaybadge>
+        </div>
+        <div>
+        </div>
       </div>
-      <div>
-      </div>
+
     </div>
 
   </div>
-
 </header>
+
 

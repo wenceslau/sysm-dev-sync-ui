@@ -1,0 +1,18 @@
+.selected-router-link {
+  padding-bottom: 5px;
+  border-bottom: 3px solid var(--gold-500);
+  font-weight: 600;
+}
+
+.text-underline:hover {
+  border-bottom: 1px solid var(--gold-500);
+}
+
+.border-shadow {
+  box-shadow: 0 0 1rem var(--dark-royal-blue-100);
+}
+
+.border-bottom-royal-blue {
+  border-bottom: 1px solid var(--dark-royal-blue-100);
+  box-shadow: 0 0 10px var(--dark-royal-blue-100);
+}

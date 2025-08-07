@@ -1,18 +1,66 @@
 @use './tailwind.css';
 @use "primeicons/primeicons.css";
 
-.bg-primary-color {
-  background-color: var(--color-primary);
+:root {
+  --dark-royal-blue-50: #e6eaf0;
+  --dark-royal-blue-100: #b3c1d1;
+  --dark-royal-blue-200: #8098b3;
+  --dark-royal-blue-300: #4d6f94;
+  --dark-royal-blue-400: #1a4676;
+  --dark-royal-blue-500: #003362;
+  --dark-royal-blue-600: #002b53;
+  --dark-royal-blue-700: #002349;
+  --dark-royal-blue-800: #001a38;
+  --dark-royal-blue-900: #001228;
+  --dark-royal-blue-950: #000a17;
+
+  --gold-50: #fdfbf6;
+  --gold-100: #f6f2e2;
+  --gold-200: #e9dfb1;
+  --gold-300: #cebe8a;
+  --gold-400: #b29d64;
+  --gold-500: #957C3D;
+  --gold-600: #806a34;
+  --gold-700: #6b582b;
+  --gold-800: #564622;
+  --gold-900: #413519;
+  --gold-950: #2c2310;
 }
 
-.bg-primary-color-50 {
-  background-color: var(--color-primary-50);
+.bg-dark-royal-blue {
+  background-color: var(--dark-royal-blue-500);
 }
 
-.bg-p-primary-color-400 {
-  background-color: var(--p-primary-400);
+.bg-dark-royal-blue-50 {
+  background-color: var(--dark-royal-blue-50);
 }
 
-.bg-p-primary-color-700 {
-  background-color: var(--p-primary-700);
+.bg-dark-royal-blue-100 {
+  background-color: var(--dark-royal-blue-100);
 }
+
+.bg-gold {
+  background-color: var(--gold-500);
+}
+
+.bg-gold-50 {
+  background-color: var(--gold-50);
+}
+
+.bg-gold-100 {
+  background-color: var(--gold-100);
+}
+
+.text-dark-royal-blue {
+  color: var(--dark-royal-blue-500);
+}
+
+.text-dark-royal-blue-100 {
+  color: var(--dark-royal-blue-100);
+}
+
+.text-gold {
+  color: var(--gold-500);
+}
+
+

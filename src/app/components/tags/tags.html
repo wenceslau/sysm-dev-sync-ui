@@ -1,98 +1,70 @@
-<div class="flex flex-col items-center gap-4" id="divContainer">
+<div class="flex flex-col items-center gap-4  pt-4" id="divContainer">
 
   <div class="fixed flex flex-col gap-2 z-10 top-[50%] lg:right-[12%] sm:right-5" id="divToolbar">
-    <p-button (click)="signalApp.setShowTagInput(true)" [rounded]="true" class="hover:scale-110" icon="pi pi-plus"/>
-    <p-button [pTooltip]="tooltipContent" [rounded]="true" class="hover:scale-110" icon="pi pi-info"
-              severity="info" tooltipPosition="bottom"/>
+    <p-button (click)="signalApp.setShowTagInput(true)" [rounded]="true" class="hover:scale-110 bg-accent-color"
+              icon="pi pi-plus"/>
   </div>
 
-  <ng-template #tooltipContent>
-    <div class="flex items-center gap-4">
-      <i class="pi pi-tag" style="font-size: 20px"></i>
-      <span>
-        A tag is a keyword or label that groups your question with related inquiries, and picking the right
-        tags makes it easier for others to find and answer it.!
-      </span>
-    </div>
-  </ng-template>
 
-  <div class=" w-1/2 z-10 top-[50%] lg:right-[12%] sm:right-5 justify-center items-center hover:scale-105"
+  <div class=" w-1/2 z-10 top-[50%] lg:right-[12%] sm:right-5 justify-center items-center"
        id="divToolbar2">
-    <p-toolbar [style]="{ 'border-radius': '3rem', 'padding': '1rem 1rem 1rem 1rem' }">
-      <p-iconfield class="w-full">
-        <input (input)="onSearchInput()" [(ngModel)]="searchValue" class="w-full text-center" pInputText
-               pSize="small"
-               placeholder="Tag search" type="text"/>
-        @if (searchValue) {
-          <p-inputicon class="pi pi-times cursor-pointer" (click)="searchValue = ''; loadingTags()"/>
-        }
-      </p-iconfield>
-    </p-toolbar>
+    <p-iconfield class="w-full">
+      <input (input)="onSearchInput()" [(ngModel)]="searchValue" class="w-full text-center" pInputText
+             pSize="small"
+             placeholder="Tag search" type="text"/>
+      @if (searchValue) {
+        <p-inputicon class="pi pi-times cursor-pointer" (click)="searchValue = ''; loadingTags()"/>
+      }
+    </p-iconfield>
   </div>
-
 
   <div class="w-2/3" id="divDataView">
 
-<!--    &lt;!&ndash; Show a loading indicator while fetching data &ndash;&gt;-->
-<!--    @if (isLoading) {-->
-<!--      <div class="flex justify-center items-center py-20">-->
-<!--        <p-progressSpinner aria-label="Loading Tags"/>-->
-<!--      </div>-->
-<!--    }-->
-<!--    &lt;!&ndash; Show the data view once loading is complete &ndash;&gt;-->
-<!--    @if (!isLoading) {-->
-      <p-data-view #dv [value]="tags" [rows]="rowsPage" [lazyLoadOnInit]="true" [totalRecords]="totalRecords"
-                   [loading]="isLoading" [paginator]="true" [lazy]="true" (onLazyLoad)="onLazyLoad($event)">
-        <ng-template #list let-items>
-          <div class="py-6">
+    <p-data-view #dv (onLazyLoad)="onLazyLoad($event)" [lazyLoadOnInit]="true" [lazy]="true" [loading]="isLoading"
+                 [paginator]="true" [rows]="rowsPage" [totalRecords]="totalRecords" [value]="tags">
+      <ng-template #list let-items>
+        <div class="py-6">
 
-            @for (tag of items; track tag.id) {
-              <!-- The main flex container for a single row -->
-              <div
-                class="flex items-center mx-4 p-4 rounded-lg hover:scale-101 transition-all gap-6 bg-primary-color-50">
+          @for (tag of items; track tag.id) {
+            <div
+              class="flex items-center mx-4 p-4 rounded-lg hover:scale-101 transition-all gap-6 bg-dark-royal-blue-50">
 
-                <!-- 1. Icon Column: Prevent this from shrinking -->
-                <div class="flex-shrink-0 flex gap-2 items-center justify-center">
-                  <img alt="{{tag.name}}" width="40px" src="/icons/{{tag.name | lowercase}}.svg"/>
+              <div class="flex-shrink-0 flex gap-2 items-center justify-center">
+                <img alt="{{tag.name}}" width="40px" src="/icons/{{tag.name | lowercase}}.svg"/>
+              </div>
+
+              <div class="flex-1 flex flex-col space-y-3 min-w-0">
+                <div class="flex items-center space-x-5">
+                  <p class="text-lg font-semibold">
+                    {{ tag.name }}
+                  </p>
+                  <p class="text-sm text-gray-500 ">
+                    ({{ tag.category }})
+                  </p>
                 </div>
-
-                <!-- 2. Main Content Column: Make this flexible and allow it to shrink -->
-                <div class="flex-1 flex flex-col space-y-3 min-w-0">
-                  <div class="flex items-center space-x-5">
-                    <p class="text-lg font-semibold">
-                      {{ tag.name }}
-                    </p>
-                    <p class="text-sm text-gray-500 ">
-                      ({{ tag.category }})
-                    </p>
-                  </div>
-                  <!-- 3. The Fix: Use 'block' and 'truncate' -->
-                  <span id="tagDescription" class="block text-sm truncate">
+                <span id="tagDescription" class="block text-sm truncate">
                     {{ tag.description }}
                   </span>
-                </div>
-
-                <!-- Other Columns: Prevent these from shrinking -->
-                <div class="flex-shrink-0 flex gap-2 items-center justify-center">
-                  <i class="pi pi-tag ml-2" [ngStyle]="{'color': tag.color}" style="font-size: 20px"></i>
-                </div>
-
-                <div class="flex-shrink-0 flex gap-2 text-center underline">
-                  {{ tag.amountUsed }} Questions
-                </div>
-
-                <!-- Add an Edit Button Column -->
-                <div class="flex-shrink-0 ml-auto ">
-                  <p-button icon="pi pi-pencil" [text]="true" (click)="editTag(tag)"/>
-                </div>
-
               </div>
-              <p-divider/>
-            }
-          </div>
-        </ng-template>
-      </p-data-view>
-<!--    }-->
+
+              <div class="flex-shrink-0 flex gap-2 items-center justify-center">
+                <i class="pi pi-tag ml-2" [ngStyle]="{'color': tag.color}" style="font-size: 20px"></i>
+              </div>
+
+              <div class="flex-shrink-0 flex gap-2 text-center underline">
+                {{ tag.amountUsed }} Questions
+              </div>
+
+              <div class="flex-shrink-0 ml-auto ">
+                <p-button icon="pi pi-pencil" [text]="true" (click)="editTag(tag)"/>
+              </div>
+
+            </div>
+            <p-divider/>
+          }
+        </div>
+      </ng-template>
+    </p-data-view>
   </div>
 
   <app-form-input></app-form-input>

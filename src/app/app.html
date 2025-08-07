@@ -1,14 +1,12 @@
-
-<!-- 1. Wrap everything in a container with a minimum height of the screen and flexbox column layout -->
-<div class="flex flex-col min-h-screen">
+<div class="flex flex-col h-screen bg-surface-50 dark:bg-surface-900">
 
   <app-header></app-header>
 
-  <!-- 2. The main content area now uses flex-grow to take up all available space, pushing the footer down -->
-  <main class="flex-grow mt-24 lg:mx-[10%] sm:mx-5 bg-primary-color-50 mb-2 p-6">
-    <router-outlet></router-outlet>
+  <main class="flex-grow overflow-y-auto ">
+    <div class="min-h-[73%]" >
+      <router-outlet></router-outlet>
+    </div>
+    <app-footer></app-footer>
   </main>
-
-  <app-footer></app-footer>
 
 </div>

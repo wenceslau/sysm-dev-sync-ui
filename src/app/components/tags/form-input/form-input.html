@@ -7,21 +7,21 @@
     <div class="flex flex-col gap-2">
       <label for="name">Tag name</label>
       <input aria-describedby="name-help" formControlName="name" id="name" pInputText/>
-      <small class="p-error" id="name-help">
+      <p-message severity="error" size="small" variant="simple">
         @if (formGroup.get('name')?.invalid && formGroup.get('name')?.touched) {
           <span>Name is required (minimum 3 characters).</span>
         }
-      </small>
+      </p-message>
     </div>
     <!-- Category Field -->
     <div class="flex flex-col gap-2">
       <label for="category">Category</label>
       <input aria-describedby="category-help" formControlName="category" id="category" pInputText/>
-      <small class="p-error" id="category-help">
+      <p-message severity="error" size="small" variant="simple">
         @if (formGroup.get('category')?.invalid && formGroup.get('category')?.touched) {
           <span>Category is required.</span>
         }
-      </small>
+      </p-message>
     </div>
 
     <!-- Color Field -->
@@ -51,24 +51,23 @@
         </ng-template>
 
       </p-select>
-      <small class="p-error" id="color-help">
+      <p-message severity="error" size="small" variant="simple">
         @if (formGroup.get('color')?.invalid && formGroup.get('color')?.touched) {
           <span>Color is required.</span>
         }
-        {{ formGroup.get('color')?.value }}
-      </small>
+      </p-message>
     </div>
 
     <!-- Description Field -->
     <div class="flex flex-col gap-2">
       <label for="description">Description</label>
-      <textarea aria-describedby="description-help" formControlName="description" id="description" pInputTextarea
+      <textarea aria-describedby="description-help" formControlName="description" id="description" pTextarea
                 rows="4"></textarea>
-      <small class="p-error" id="description-help">
+      <p-message severity="error" size="small" variant="simple">
         @if (formGroup.get('description')?.invalid && formGroup.get('description')?.touched) {
           <span>Description is required.</span>
         }
-      </small>
+      </p-message>
     </div>
 
   </form>

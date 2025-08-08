@@ -47,6 +47,7 @@ import {Select} from "primeng/select";
 import {Tooltip} from "primeng/tooltip";
 import {Scroller} from "primeng/scroller";
 import {Message} from 'primeng/message';
+import {TableModule} from 'primeng/table';
 
 const MyPreset = definePreset(Aura, {
   semantic: {
@@ -114,7 +115,8 @@ const MyPreset = definePreset(Aura, {
     Select,
     Tooltip,
     Scroller,
-    Message
+    Message,
+    TableModule
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),

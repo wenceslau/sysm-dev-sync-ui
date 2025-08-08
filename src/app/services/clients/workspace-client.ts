@@ -10,6 +10,7 @@ export interface Workspace {
   isPrivate: boolean;
   ownerId: string,
   membersId: string[];
+  projectCount: number;
   createdAt: Date;
   updatedAt: Date;
 }

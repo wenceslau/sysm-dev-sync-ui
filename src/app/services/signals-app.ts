@@ -11,8 +11,7 @@ export class SignalsApp {
   public refreshTags = signal<boolean>(false);
 
   public showTagInput = signal<boolean>(false);
-  setShowTagInput(value: boolean): void {
-    this.showTagInput.set(value);
-  }
+
+  public showWorkspaceInput = signal<boolean>(false);
 
 }

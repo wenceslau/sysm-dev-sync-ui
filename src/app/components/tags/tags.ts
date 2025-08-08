@@ -18,15 +18,15 @@ export class Tags implements OnInit, OnDestroy {
   currentPage = 0;
   totalRecords = 0;
   isLoading = true;
-  searchValue: string = '';
 
   tags: Tag[] = [];
   tagClient = inject(TagClient);
   signalApp = inject(SignalsApp);
 
   // 1. RxJS Subject to handle search term changes
-  private searchSubscription!: Subscription;
-  private searchSubject = new Subject<string>();
+  protected searchSubscription!: Subscription;
+  protected searchSubject = new Subject<string>();
+  protected searchValue: string = '';
 
   constructor() {
     effect(() => {
@@ -104,7 +104,7 @@ export class Tags implements OnInit, OnDestroy {
     }
   }
 
-  private createSearchRequest(term: string, pageNumber: number): SearchRequest {
+  protected createSearchRequest(term: string, pageNumber: number): SearchRequest {
     const filters = new Map<string, string>();
     if (term) {
       filters.set('name', term);

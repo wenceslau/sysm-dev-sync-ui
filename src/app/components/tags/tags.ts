@@ -107,8 +107,10 @@ export class Tags implements OnInit, OnDestroy {
   protected createSearchRequest(term: string, pageNumber: number): SearchRequest {
     const filters = new Map<string, string>();
     if (term) {
+      filters.set('id', term);
       filters.set('name', term);
       filters.set('description', term);
+      filters.set('category', term);
     }
     return {queryType: 'or', filters: filters, pageNumber: pageNumber, pageSize: this.rowsPage};
   }

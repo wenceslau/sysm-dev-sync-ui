@@ -1,39 +1,60 @@
 <div class="flex flex-col items-center gap-4  pt-4" id="divContainer">
 
+  <div class=" w-1/2 z-10 top-[50%] lg:right-[12%] sm:right-5 justify-center items-center"
+       id="divToolbar2">
+    <p-iconfield class="w-full">
+      <input (input)="onSearchInput()" [(ngModel)]="searchValue" class="w-full text-center" pInputText
+             pSize="small"
+             placeholder="Tag search" type="text"/>
+      @if (searchValue) {
+        <p-inputicon class="pi pi-times cursor-pointer" (click)="searchValue = ''; loadingWorkspace()"/>
+      }
+    </p-iconfield>
+  </div>
+
   <div class="fixed flex flex-col gap-2 z-10 top-[50%] lg:right-[12%] sm:right-5" id="divToolbar">
     <p-button (click)="signalApp.showWorkspaceInput.set(true)" [rounded]="true" class="hover:scale-110 bg-accent-color"
               icon="pi pi-plus"/>
   </div>
 
   <div class="w-2/3" id="divDataView">
-    <p-table [value]="workspaces" [tableStyle]="{ 'min-width': '50rem' }">
+    <p-table [tableStyle]="{ 'min-width': '50rem' }" [value]="workspaces">
       <ng-template #header>
         <tr>
+          <th>Private</th>
           <th>Name</th>
           <th>Description</th>
-          <th>Private</th>
+          <th>Owner</th>
           <th></th>
           <th></th>
         </tr>
       </ng-template>
       <ng-template #body let-workspace>
         <tr>
+          <td>
+            <p-checkbox [(ngModel)]="workspace.isPrivate" [binary]="true" readonly size="small"/>
+          </td>
           <td>{{ workspace.name }}</td>
           <td>{{ workspace.description }}</td>
-          <td>{{ workspace.isPrivate }}</td>
+          <td>{{ workspace.owner }}</td>
           <td class="underline">
-            <a href="#"> {{ workspace.membersId.length }} Member(s) </a>
-            <br>
-            <a href="#"> {{ workspace.projectCount }} Project(s) </a>
+            <li>
+              <a (click)="navigateTo('user', workspace.id)" class="cursor-pointer"> {{ workspace.membersId.length }}
+                Member(s) </a>
+            </li>
+            <li>
+              <a (click)="navigateTo('project', workspace.id)" class="cursor-pointer"> {{ workspace.projectCount }}
+                Project(s) </a>
+            </li>
           </td>
           <td>
-            <p-button icon="pi pi-pencil" [text]="true"/>
+            <p-button icon="pi pi-pencil" [text]="true" (click)="editWorkspace(workspace)"/>
+
           </td>
         </tr>
       </ng-template>
     </p-table>
   </div>
 
-  <app-form-input></app-form-input>
-
+  <app-workspace-input></app-workspace-input>
 </div>

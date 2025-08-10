@@ -18,7 +18,7 @@ import {DrawerModule} from 'primeng/drawer';
 import {ToggleSwitchModule} from 'primeng/toggleswitch';
 import {RadioButtonModule} from 'primeng/radiobutton';
 import {RippleModule} from 'primeng/ripple';
-import {provideHttpClient, withInterceptors} from '@angular/common/http';
+import {provideHttpClient, withFetch, withInterceptors} from '@angular/common/http';
 import {authInterceptor} from './services/security/auth-interceptor';
 import {Header} from './components/layout/header/header';
 import {definePreset} from '@primeuix/themes';
@@ -48,6 +48,8 @@ import {Tooltip} from "primeng/tooltip";
 import {Scroller} from "primeng/scroller";
 import {Message} from 'primeng/message';
 import {TableModule} from 'primeng/table';
+import {Checkbox} from "primeng/checkbox";
+import { WorkspaceInput } from './components/workspaces/workspace-input/workspace-input';
 
 const MyPreset = definePreset(Aura, {
   semantic: {
@@ -79,49 +81,51 @@ const MyPreset = definePreset(Aura, {
     Workspaces,
     Tags,
     FormInput,
+    WorkspaceInput,
   ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    AppRoutingModule,
-    Button,
-    Menubar,
-    PanelMenu,
-    CommonModule,
-    ButtonModule,
-    StyleClassModule,
-    FormsModule,
-    SelectButtonModule,
-    DrawerModule,
-    ToggleSwitchModule,
-    RadioButtonModule,
-    RippleModule,
-    ButtonModule,
-    IconField,
-    InputIcon,
-    InputText,
-    OverlayBadge,
-    Avatar,
-    NgOptimizedImage,
-    DataViewModule,
-    Divider,
-    Toolbar,
-    ProgressSpinner,
-    ProgressSpinnerModule,
-    Dialog,
-    ReactiveFormsModule,
-    ColorPicker,
-    Textarea,
-    Select,
-    Tooltip,
-    Scroller,
-    Message,
-    TableModule
-  ],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        AppRoutingModule,
+        Button,
+        Menubar,
+        PanelMenu,
+        CommonModule,
+        ButtonModule,
+        StyleClassModule,
+        FormsModule,
+        SelectButtonModule,
+        DrawerModule,
+        ToggleSwitchModule,
+        RadioButtonModule,
+        RippleModule,
+        ButtonModule,
+        IconField,
+        InputIcon,
+        InputText,
+        OverlayBadge,
+        Avatar,
+        NgOptimizedImage,
+        DataViewModule,
+        Divider,
+        Toolbar,
+        ProgressSpinner,
+        ProgressSpinnerModule,
+        Dialog,
+        ReactiveFormsModule,
+        ColorPicker,
+        Textarea,
+        Select,
+        Tooltip,
+        Scroller,
+        Message,
+        TableModule,
+        Checkbox
+    ],
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideAnimationsAsync(),
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor]), withFetch()),
     providePrimeNG({
       theme: {
         preset: MyPreset,

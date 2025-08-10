@@ -8,7 +8,7 @@ export interface Workspace {
   name: string;
   description: string;
   isPrivate: boolean;
-  ownerId: string,
+  owner: string,
   membersId: string[];
   projectCount: number;
   createdAt: Date;

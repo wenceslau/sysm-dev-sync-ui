@@ -1,0 +1,45 @@
+
+<p-dialog (onHide)="closeDialog()" [(visible)]="visible" [header]="header" [modal]="true" [style]="{ width: '30rem' }">
+
+  <form [formGroup]="formGroup" class="grid gap-4 mb-4 sm:grid-cols-1">
+
+    <div class="flex flex-col gap-2">
+      <label for="name">Tag name</label>
+      <input aria-describedby="name-help" formControlName="name" id="name" pInputText/>
+      <p-message severity="error" size="small" variant="simple">
+        @if (formGroup.get('name')?.invalid && formGroup.get('name')?.touched) {
+          <span>Name is required (minimum 3 characters).</span>
+        }
+      </p-message>
+    </div>
+
+    <!-- Description Field -->
+    <div class="flex flex-col gap-2">
+      <label for="description">Description</label>
+      <textarea aria-describedby="description-help" formControlName="description" id="description" pTextarea
+                rows="4"></textarea>
+      <p-message severity="error" size="small" variant="simple">
+        @if (formGroup.get('description')?.invalid && formGroup.get('description')?.touched) {
+          <span>Description is required.</span>
+        }
+      </p-message>
+    </div>
+
+    <div class="flex flex-grid gap-2 items-center">
+      <p-checkbox formControlName="isPrivate" id="isPrivate" inputId="isPrivate"  [binary]="true"/>
+      <label for="category">Private</label>
+    </div>
+
+  </form>
+
+  <!-- Footer with Action Buttons -->
+  <ng-template pTemplate="footer">
+    <p-button (click)="closeDialog()" [text]="true" label="Cancel" severity="secondary"/>
+    <p-button
+      (click)="save()"
+      [disabled]="formGroup.invalid || isSaving"
+      [label]="isSaving ? 'Saving...' : 'Save'"
+      [loading]="isSaving"/>
+  </ng-template>
+
+</p-dialog>

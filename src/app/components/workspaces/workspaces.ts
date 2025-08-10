@@ -2,9 +2,10 @@ import {Component, effect, inject, OnInit} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {Tag, TagClient} from '../../services/clients/tag-client';
 import {SignalsApp} from '../../services/signals-app';
-import {WorkspaceClient} from '../../services/clients/workspace-client';
+import {Workspace, WorkspaceClient} from '../../services/clients/workspace-client';
 import {SearchRequest} from '../../services/clients/abstract-client';
 import {debounceTime, distinctUntilChanged, switchMap, tap} from 'rxjs/operators';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-workspaces',
@@ -26,16 +27,18 @@ export class Workspaces implements OnInit {
   workspaces: Tag[] = [];
   workspaceClient = inject(WorkspaceClient);
   signalApp = inject(SignalsApp);
+  router = inject(Router);
+
 
 
   constructor() {
     effect(() => {
-      if (this.signalApp.refreshTags()) {
+      if (this.signalApp.refreshWorkspace()) {
         console.log('Refresh signal received, reloading tags...');
         // 2. When refreshing, clear the search bar and load all tags
         this.searchValue = '';
         this.loadingWorkspace();
-        this.signalApp.refreshTags.set(false);
+        this.signalApp.refreshWorkspace.set(false);
       }
     });
   }
@@ -78,6 +81,16 @@ export class Workspaces implements OnInit {
     this.searchSubject.next(this.searchValue);
   }
 
+  editWorkspace(workspace: Workspace) {
+    this.signalApp.selectedWorkspace.set(workspace);
+    this.signalApp.showWorkspaceInput.set(true);
+  }
+
+
+  protected navigateTo(route: string, id: string) {
+    this.router.navigate([route]);
+  }
+
   protected async loadingWorkspace(): Promise<void> {
     this.isLoading = true;
     try {
@@ -95,8 +108,10 @@ export class Workspaces implements OnInit {
   protected createSearchRequest(term: string, pageNumber: number): SearchRequest {
     const filters = new Map<string, string>();
     if (term) {
+      filters.set('id', term);
       filters.set('name', term);
       filters.set('description', term);
+      filters.set('ownerName', term);
     }
     return {queryType: 'or', filters: filters, pageNumber: pageNumber, pageSize: this.rowsPage};
   }

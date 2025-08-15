@@ -1,5 +1,5 @@
 import {Injectable, Signal, signal} from '@angular/core';
-import {Tag } from './clients/tag-client';
+import {Tag} from './clients/tag-client';
 import {Workspace} from './clients/workspace-client';
 
 @Injectable({
@@ -16,5 +16,6 @@ export class SignalsApp {
 
   public showTagInput = signal<boolean>(false);
   public showWorkspaceInput = signal<boolean>(false);
+  public showWorkspaceAddMember = signal<boolean>(false);
 
 }

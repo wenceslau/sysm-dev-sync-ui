@@ -5,7 +5,7 @@
     <p-iconfield class="w-full">
       <input (input)="onSearchInput()" [(ngModel)]="searchValue" class="w-full text-center" pInputText
              pSize="small"
-             placeholder="Tag search" type="text"/>
+             placeholder="Workspace search" type="text"/>
       @if (searchValue) {
         <p-inputicon class="pi pi-times cursor-pointer" (click)="searchValue = ''; loadingWorkspace()"/>
       }
@@ -39,7 +39,7 @@
           <td>{{ workspace.owner }}</td>
           <td class="underline">
             <li>
-              <a (click)="navigateTo('user', workspace.id)" class="cursor-pointer"> {{ workspace.membersId.length }}
+              <a (click)="navigateTo('user', workspace.id)" class="cursor-pointer"> {{ workspace.members.length }}
                 Member(s) </a>
             </li>
             <li>
@@ -49,7 +49,7 @@
           </td>
           <td>
             <p-button icon="pi pi-pencil" [text]="true" (click)="editWorkspace(workspace)"/>
-
+            <p-button icon="pi pi-user-plus" [text]="true" (click)="addMembers(workspace)"/>
           </td>
         </tr>
       </ng-template>
@@ -57,4 +57,5 @@
   </div>
 
   <app-workspace-input></app-workspace-input>
+  <app-workspace-add-member></app-workspace-add-member>
 </div>

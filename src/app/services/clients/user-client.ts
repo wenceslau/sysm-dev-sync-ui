@@ -5,7 +5,7 @@ import {Observable} from 'rxjs';
 
 export interface User {
   id: string;
-  username?: string;
+  name?: string;
   email?: string;
   roles?: UserRole;
   profilePictureUrl?: string;

@@ -1,0 +1,36 @@
+<p-dialog (onHide)="closeDialog()" [(visible)]="visible" [modal]="true" [style]="{ width: '30rem' }" header="Members">
+
+  <form class="grid gap-4 mb-4 sm:grid-cols-1">
+
+    <div class="flex items-center justify-center gap-2 w-full">
+      <!--suppress CheckEmptyScriptTag, HtmlUnknownTag -->
+      <p-autocomplete (completeMethod)="onSearch($event)" [(ngModel)]="selectedMember" [suggestions]="userSuggested"
+                      appendTo="body"
+                      name="member" optionLabel="name"/>
+      <p-button (click)="addMember()"
+                [disabled]="isSaving"
+                [label]="isSaving ? 'Adding...' : 'Add'"
+                [loading]="isSaving"/>
+    </div>
+
+    <div class="w-full min-h-64 overflow-y-auto">
+      <p-listbox [options]="listBoxOptions()" name="member">
+        <ng-template #item let-user>
+          <div class="flex justify-between items-center gap-2 w-full">
+            <span>{{ user.name }}</span>
+            @if (deleteClicked && user.id === selectedMemberWorkspace?.id) {
+              <p-button [id]="user.id" [text]="true"
+                        [label]="isDeleting ? 'Removing...' : 'Confirm?'"
+                        (click)="removeMember()"/>
+            } @else {
+              <p-button [id]="user.id" [text]="true" icon="pi pi-times" (click)="prepareDelete(user)"/>
+            }
+          </div>
+        </ng-template>
+      </p-listbox>
+
+    </div>
+
+  </form>
+
+</p-dialog>

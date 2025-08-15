@@ -1,15 +1,17 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {AbstractClient, SearchRequest} from './abstract-client';
 import {map, Observable} from 'rxjs';
 import {parseISO} from 'date-fns';
+import {RequestData} from '../http-app';
+import {User} from './user-client';
 
 export interface Workspace {
   id: string;
   name: string;
   description: string;
   isPrivate: boolean;
-  owner: string,
-  membersId: string[];
+  owner: User,
+  members: User[] | [];
   projectCount: number;
   createdAt: Date;
   updatedAt: Date;
@@ -18,11 +20,19 @@ export interface Workspace {
 @Injectable({
   providedIn: 'root'
 })
-export class WorkspaceClient extends AbstractClient<Workspace>{
+export class WorkspaceClient extends AbstractClient<Workspace> {
 
   constructor() {
     super();
     this.setReqMapping('/workspaces');
+  }
+
+  async addMember(id: string, memberId: string) {
+    return this.saveAsync(undefined, `/${id}/members/${memberId}`);
+  }
+
+  removeMember(id: string, memberId: string) {
+    return this.deleteAsync(id, `/members/${memberId}`);
   }
 
   /**

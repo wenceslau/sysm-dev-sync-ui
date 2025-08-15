@@ -50,6 +50,9 @@ import {Message} from 'primeng/message';
 import {TableModule} from 'primeng/table';
 import {Checkbox} from "primeng/checkbox";
 import { WorkspaceInput } from './components/workspaces/workspace-input/workspace-input';
+import { WorkspaceAddMember } from './components/workspaces/workspace-add-member/workspace-add-member';
+import {AutoComplete} from 'primeng/autocomplete';
+import {Listbox} from "primeng/listbox";
 
 const MyPreset = definePreset(Aura, {
   semantic: {
@@ -82,6 +85,7 @@ const MyPreset = definePreset(Aura, {
     Tags,
     FormInput,
     WorkspaceInput,
+    WorkspaceAddMember,
   ],
     imports: [
         BrowserModule,
@@ -120,7 +124,9 @@ const MyPreset = definePreset(Aura, {
         Scroller,
         Message,
         TableModule,
-        Checkbox
+        Checkbox,
+        AutoComplete,
+        Listbox
     ],
   providers: [
     provideBrowserGlobalErrorListeners(),

@@ -86,6 +86,11 @@ export class Workspaces implements OnInit {
     this.signalApp.showWorkspaceInput.set(true);
   }
 
+  addMembers(workspace: Workspace) {
+    this.signalApp.selectedWorkspace.set(workspace);
+    this.signalApp.showWorkspaceAddMember.set(true);
+  }
+
 
   protected navigateTo(route: string, id: string) {
     this.router.navigate([route]);

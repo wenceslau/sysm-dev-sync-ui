@@ -56,15 +56,15 @@ export class WorkspaceClient extends AbstractClient<Workspace> {
   /**
    * You must also override list() to handle the conversion for arrays.
    */
-  override list(search: SearchRequest): Observable<Workspace[]> {
-    return super.list(search).pipe(
-      map(workspaces => workspaces.map(w => { // map the array, then map each item
-        return {
-          ...w,
-          createdAt: parseISO(w.createdAt as any),
-          updatedAt: parseISO(w.updatedAt as any)
-        };
-      }))
-    );
-  }
+  // override list(search: SearchRequest): Observable<Workspace[]> {
+  //   return super.list(search).pipe(
+  //     map(workspaces => workspaces.map(w => { // map the array, then map each item
+  //       return {
+  //         ...w,
+  //         createdAt: parseISO(w.createdAt as any),
+  //         updatedAt: parseISO(w.updatedAt as any)
+  //       };
+  //     }))
+  //   );
+  // }
 }

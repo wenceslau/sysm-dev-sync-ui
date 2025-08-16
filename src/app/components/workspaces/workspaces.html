@@ -36,7 +36,7 @@
           </td>
           <td>{{ workspace.name }}</td>
           <td>{{ workspace.description }}</td>
-          <td>{{ workspace.owner }}</td>
+          <td>{{ workspace.owner.name }}</td>
           <td class="underline">
             <li>
               <a (click)="navigateTo('user', workspace.id)" class="cursor-pointer"> {{ workspace.members.length }}

@@ -12,6 +12,8 @@ DEPENDENCIES TO INSTALL
   npm i tailwindcss-primeui
   npm i --save-dev @angular-devkit/build-angular karma karma-chrome-launcher karma-coverage karma-jasmine jasmine-core --force
   npm i date-fns
+  npm install quill - Editor text
+
 
 CONFIGURATION (USE THIS PROJECT AS EXAMPLE)
   1 - CREATE tailwind.css FILE

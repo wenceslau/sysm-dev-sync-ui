@@ -1,1 +1,60 @@
-<p>projects works!</p>
+<div class="flex flex-col items-center gap-4  pt-4" id="divContainer">
+
+  <div class="flex flex-row w-2/3 gap-4" id="divDataView">
+
+    <div class="flex flex-col gap-4">
+
+      <div class=" w-full z-10 top-[50%] lg:right-[12%] sm:right-5 justify-center items-center"
+           id="divToolbar2">
+        <p-iconfield class="w-[95%]">
+          <input (input)="onSearchInput()" [(ngModel)]="searchValue" class="w-full text-center" pInputText
+                 pSize="small"
+                 placeholder="Project search" type="text"/>
+          @if (searchValue) {
+            <p-inputicon class="pi pi-times cursor-pointer" (click)="searchValue = ''; loadingProjects()"/>
+          }
+        </p-iconfield>
+      </div>
+
+      <div class="h-[650px] overflow-y-auto">
+
+        <p-data-view #dv (onLazyLoad)="onLazyLoad($event)" [lazyLoadOnInit]="true" [lazy]="true" [loading]="isLoading"
+                     [paginator]="true" [rows]="rowsPage" [totalRecords]="totalRecords" [value]="projects">
+          <ng-template #list let-items>
+            <div class="py-6">
+
+              @for (project of items; track project.id) {
+                <div (click)="editProject(project)" class="flex items-center mx-4 p-4 rounded-lg hover:scale-101
+                transition-all gap-6 bg-dark-royal-blue-50 cursor-pointer">
+
+                  <div class="flex-1 flex flex-col space-y-3 min-w-0">
+                    <div class="flex items-center space-x-5">
+                      <p class="text-lg font-semibold">
+                        {{ project.name }}
+                      </p>
+                    </div>
+                    <span id="tagDescription" class="block text-sm truncate">
+                      Started at: {{ project.createdAt | date: 'dd/MM/yyyy' }}
+                    </span>
+                  </div>
+
+                </div>
+                <p-divider/>
+              }
+
+            </div>
+          </ng-template>
+        </p-data-view>
+      </div>
+
+    </div>
+
+    <div>
+
+      <app-project-input></app-project-input>
+
+    </div>
+
+  </div>
+
+</div>

@@ -12,6 +12,7 @@ import {AutoCompleteCompleteEvent} from 'primeng/autocomplete';
   styleUrl: './workspace-add-member.scss'
 })
 export class WorkspaceAddMember {
+
   protected signalApp = inject(SignalsApp);
   private userClient = inject(UserClient);
   private workspaceClient = inject(WorkspaceClient);
@@ -41,20 +42,31 @@ export class WorkspaceAddMember {
     });
   }
 
-  async loadUsers() {
-    this.users = await this.userClient.listAsync({}, "/list");
-
-    //remove from the users list the members exist on the selected workspace
-    this.users = this.users.filter(user => !this.selectedWorkspace?.members.some(member => member.id === user.id));
+  protected prepareDelete(member: User) {
+    this.selectedMemberWorkspace = member;
+    this.deleteClicked = true;
   }
 
-  async loadWorkspace() {
+  protected listBoxOptions(): any[] {
     if (this.selectedWorkspace) {
-      this.selectedWorkspace = await this.workspaceClient.getByIdAsync(this.selectedWorkspace.id);
+      return this.selectedWorkspace.members
     }
+    return []
   }
 
-  async addMember() {
+  protected closeDialog() {
+    this.signalApp.showWorkspaceAddMember.set(false);
+    this.signalApp.selectedWorkspace.set(null);
+    this.signalApp.refreshWorkspace.set(true);
+  }
+
+  // Event handlers
+  protected onSearch(event: AutoCompleteCompleteEvent) {
+    this.userSuggested = this.users.filter(user => user.name?.toLowerCase().includes(event.query.toLowerCase()));
+  }
+
+  // Async functions
+  protected async addMember() {
 
     this.isSaving = true;
 
@@ -77,7 +89,7 @@ export class WorkspaceAddMember {
     }
   }
 
-  async removeMember() {
+  protected async removeMember() {
     this.isDeleting = true;
     try {
       //Add member to workspace
@@ -98,25 +110,18 @@ export class WorkspaceAddMember {
     }
   }
 
-  protected prepareDelete(member: User) {
-    this.selectedMemberWorkspace = member;
-    this.deleteClicked = true;
+  private async loadUsers() {
+    this.users = await this.userClient.listAsync({}, "/list");
+
+    //remove from the users list the members exist on the selected workspace
+    this.users = this.users.filter(user => !this.selectedWorkspace?.members.some(member => member.id === user.id));
   }
 
-  protected closeDialog() {
-    this.signalApp.showWorkspaceAddMember.set(false);
-    this.signalApp.selectedWorkspace.set(null);
-    this.signalApp.refreshWorkspace.set(true);
-  }
-
-  protected onSearch(event: AutoCompleteCompleteEvent) {
-    this.userSuggested = this.users.filter(user => user.name?.toLowerCase().includes(event.query.toLowerCase()));
-  }
-
-  protected listBoxOptions(): any[] {
+  private async loadWorkspace() {
     if (this.selectedWorkspace) {
-      return this.selectedWorkspace.members
+      this.selectedWorkspace = await this.workspaceClient.getByIdAsync(this.selectedWorkspace.id);
     }
-    return []
   }
+
+
 }

@@ -1,4 +1,4 @@
-import {Component, effect, inject, OnInit} from '@angular/core';
+import {Component, effect, inject, OnDestroy, OnInit} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {Tag, TagClient} from '../../services/clients/tag-client';
 import {SignalsApp} from '../../services/signals-app';
@@ -13,23 +13,22 @@ import {Router} from '@angular/router';
   templateUrl: './workspaces.html',
   styleUrl: './workspaces.scss'
 })
-export class Workspaces implements OnInit {
+export class Workspaces implements OnInit, OnDestroy {
 
-  rowsPage = 10;
-  currentPage = 0;
-  totalRecords = 0;
-  isLoading = true;
+  private workspaceClient = inject(WorkspaceClient);
+  private router = inject(Router);
+  protected signalApp = inject(SignalsApp);
 
   protected searchSubscription!: Subscription;
   protected searchSubject = new Subject<string>();
   protected searchValue: string = '';
 
+  private rowsPage = 10;
+  private currentPage = 0;
+  private totalRecords = 0;
+  private isLoading = true;
+
   workspaces: Tag[] = [];
-  workspaceClient = inject(WorkspaceClient);
-  signalApp = inject(SignalsApp);
-  router = inject(Router);
-
-
 
   constructor() {
     effect(() => {
@@ -37,7 +36,7 @@ export class Workspaces implements OnInit {
         console.log('Refresh signal received, reloading tags...');
         // 2. When refreshing, clear the search bar and load all tags
         this.searchValue = '';
-        this.loadingWorkspace();
+        this.loadWorkspaces();
         this.signalApp.refreshWorkspace.set(false);
       }
     });
@@ -45,7 +44,7 @@ export class Workspaces implements OnInit {
 
   ngOnInit() {
     // 3. Load all tags on initial component load
-    this.loadingWorkspace();
+    this.loadWorkspaces();
 
 
     // 4. Set up the debounced search subscription
@@ -77,37 +76,18 @@ export class Workspaces implements OnInit {
     }
   }
 
-  onSearchInput(): void {
-    this.searchSubject.next(this.searchValue);
-  }
-
-  editWorkspace(workspace: Workspace) {
+  protected editWorkspace(workspace: Workspace) {
     this.signalApp.selectedWorkspace.set(workspace);
     this.signalApp.showWorkspaceInput.set(true);
   }
 
-  addMembers(workspace: Workspace) {
+  protected addMembers(workspace: Workspace) {
     this.signalApp.selectedWorkspace.set(workspace);
     this.signalApp.showWorkspaceAddMember.set(true);
   }
 
-
   protected navigateTo(route: string, id: string) {
     this.router.navigate([route]);
-  }
-
-  protected async loadingWorkspace(): Promise<void> {
-    this.isLoading = true;
-    try {
-      const searchRequest = this.createSearchRequest(this.searchValue, this.currentPage);
-      const tagPageable = await this.workspaceClient.pageAsync(searchRequest);
-      this.workspaces = tagPageable.items;
-      this.totalRecords = tagPageable.total;
-    } catch (e) {
-      console.error('Failed to load workspaces:', e);
-    } finally {
-      this.isLoading = false;
-    }
   }
 
   protected createSearchRequest(term: string, pageNumber: number): SearchRequest {
@@ -121,5 +101,22 @@ export class Workspaces implements OnInit {
     return {queryType: 'or', filters: filters, pageNumber: pageNumber, pageSize: this.rowsPage};
   }
 
+  protected onSearchInput(): void {
+    this.searchSubject.next(this.searchValue);
+  }
+
+  protected async loadWorkspaces(): Promise<void> {
+    this.isLoading = true;
+    try {
+      const searchRequest = this.createSearchRequest(this.searchValue, this.currentPage);
+      const tagPageable = await this.workspaceClient.pageAsync(searchRequest);
+      this.workspaces = tagPageable.items;
+      this.totalRecords = tagPageable.total;
+    } catch (e) {
+      console.error('Failed to load workspaces:');
+    } finally {
+      this.isLoading = false;
+    }
+  }
 
 }

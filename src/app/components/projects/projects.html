@@ -11,7 +11,7 @@
                  pSize="small"
                  placeholder="Project search" type="text"/>
           @if (searchValue) {
-            <p-inputicon class="pi pi-times cursor-pointer" (click)="searchValue = ''; loadingProjects()"/>
+            <p-inputicon class="pi pi-times cursor-pointer" (click)="searchValue = ''; loadProjects()"/>
           }
         </p-iconfield>
       </div>

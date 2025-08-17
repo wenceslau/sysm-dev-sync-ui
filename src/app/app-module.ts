@@ -55,6 +55,8 @@ import {AutoComplete} from 'primeng/autocomplete';
 import {Listbox} from "primeng/listbox";
 import { ProjectInput } from './components/projects/project-input/project-input';
 import {Editor} from "primeng/editor";
+import {Toast} from "primeng/toast";
+import {MessageService} from 'primeng/api';
 
 const MyPreset = definePreset(Aura, {
   semantic: {
@@ -130,7 +132,8 @@ const MyPreset = definePreset(Aura, {
         Checkbox,
         AutoComplete,
         Listbox,
-        Editor
+        Editor,
+        Toast
     ],
   providers: [
     provideBrowserGlobalErrorListeners(),
@@ -141,7 +144,8 @@ const MyPreset = definePreset(Aura, {
         preset: MyPreset,
         options: {darkModeSelector: '.p-dark'},
       }
-    })
+    }),
+    MessageService
   ],
   bootstrap: [App]
 })

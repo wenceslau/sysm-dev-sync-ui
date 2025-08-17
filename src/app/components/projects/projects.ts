@@ -15,25 +15,25 @@ import {Project, ProjectClient} from '../../services/clients/project-client';
 })
 export class Projects implements OnInit, OnDestroy {
 
-  rowsPage = 10;
-  currentPage = 0;
-  totalRecords = 0;
-  isLoading = true;
+  private projectClient = inject(ProjectClient);
+  protected signalApp = inject(SignalsApp);
 
-  projects: Project[] = [];
-  projectClient = inject(ProjectClient);
-  signalApp = inject(SignalsApp);
+  protected projects: Project[] = [];
 
-  // 1. RxJS Subject to handle search term changes
   protected searchSubscription!: Subscription;
   protected searchSubject = new Subject<string>();
   protected searchValue: string = '';
+
+  protected rowsPage = 10;
+  private currentPage = 0;
+  protected totalRecords = 0;
+  protected isLoading = true;
 
   constructor() {
     effect(() => {
       if (this.signalApp.refreshProjects()) {
         this.searchValue = '';
-        this.loadingProjects();
+        this.loadProjects();
         this.signalApp.refreshProjects.set(false);
       }
     });
@@ -42,7 +42,7 @@ export class Projects implements OnInit, OnDestroy {
   ngOnInit() {
     // 3. Load all tags on initial component load
     this.signalApp.selectedProject.set(null);
-    this.loadingProjects();
+    this.loadProjects();
 
     // 4. Set up the debounced search subscription
     this.searchSubscription = this.searchSubject.pipe(
@@ -73,34 +73,8 @@ export class Projects implements OnInit, OnDestroy {
     }
   }
 
-  editProject(project: Project) {
+  protected editProject(project: Project) {
     this.signalApp.selectedProject.set(project);
-  }
-
-  onSearchInput(): void {
-    this.searchSubject.next(this.searchValue);
-  }
-
-  onLazyLoad($event: DataViewLazyLoadEvent) {
-    console.log('Lazy load event', $event);
-    this.currentPage = $event.first / $event.rows;
-
-    this.loadingProjects();
-  }
-
-  // This method is now primarily for initial load and manual refreshes
-  protected async loadingProjects(): Promise<void> {
-    this.isLoading = true;
-    try {
-      const searchRequest = this.createSearchRequest(this.searchValue, this.currentPage);
-      const tagPageable = await this.projectClient.pageAsync(searchRequest);
-      this.projects = tagPageable.items;
-      this.totalRecords = tagPageable.total;
-    } catch (e) {
-      console.error('Failed to load tags:', e);
-    } finally {
-      this.isLoading = false;
-    }
   }
 
   protected createSearchRequest(term: string, pageNumber: number): SearchRequest {
@@ -114,4 +88,28 @@ export class Projects implements OnInit, OnDestroy {
     return {queryType: 'or', filters: filters, pageNumber: pageNumber, pageSize: this.rowsPage};
   }
 
+  protected onSearchInput(): void {
+    this.searchSubject.next(this.searchValue);
+  }
+
+  protected onLazyLoad($event: DataViewLazyLoadEvent) {
+    console.log('Lazy load event', $event);
+    this.currentPage = $event.first / $event.rows;
+
+    this.loadProjects();
+  }
+
+  protected async loadProjects(): Promise<void> {
+    this.isLoading = true;
+    try {
+      const searchRequest = this.createSearchRequest(this.searchValue, this.currentPage);
+      const tagPageable = await this.projectClient.pageAsync(searchRequest);
+      this.projects = tagPageable.items;
+      this.totalRecords = tagPageable.total;
+    } catch (e) {
+      console.error('Failed to load tags:');
+    } finally {
+      this.isLoading = false;
+    }
+  }
 }

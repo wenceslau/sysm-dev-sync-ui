@@ -1,6 +1,8 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {catchError, Observable, tap, throwError} from 'rxjs';
+import {LayoutState} from './layout-state';
+import {SignalsApp} from './signals-app';
 
 // It's a best practice to move the API URL to environment files
 // For example, in src/environments/environment.ts
@@ -12,6 +14,7 @@ import {catchError, Observable, tap, throwError} from 'rxjs';
 })
 export class HttpApp {
   private http = inject(HttpClient);
+  private signalApp = inject(SignalsApp);
 
   // Consider moving this to your environment files
   private readonly apiUrl = "http://localhost:8081/dev-sync/api";
@@ -75,11 +78,11 @@ export class HttpApp {
     // Use the pipe operator for side-effects (logging) and error handling
     return request$.pipe(
       tap(response => {
-        console.log(`HTTP Success: ${requestData.httpVerb} ${requestData.mapping}`, response);
+        console.log(`HTTP Success: ${requestData.httpVerb} ${requestData.mapping}`);
       }),
       catchError(error => {
         console.error(`HTTP Error: ${requestData.httpVerb} ${requestData.mapping}`, error);
-        // Re-throw the error so the calling component can handle it
+        this.signalApp.message.set({severity: 'error', content: error.message});
         return throwError(() => error);
       })
     );

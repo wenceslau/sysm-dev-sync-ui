@@ -20,4 +20,7 @@ export class SignalsApp {
   public showWorkspaceInput = signal<boolean>(false);
   public showWorkspaceAddMember = signal<boolean>(false);
 
+  public message = signal<any>(null);
+
+
 }

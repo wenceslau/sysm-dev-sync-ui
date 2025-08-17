@@ -11,8 +11,9 @@ import {Workspace, WorkspaceClient} from '../../../services/clients/workspace-cl
 })
 
 export class WorkspaceInput {
-  protected signalApp = inject(SignalsApp);
+
   private workspaceClient = inject(WorkspaceClient);
+  protected signalApp = inject(SignalsApp);
 
   protected visible: boolean = false;
   protected formGroup!: FormGroup;
@@ -36,7 +37,6 @@ export class WorkspaceInput {
     });
   }
 
-
   private initFormGroup() {
     // 2. Define the form group
     this.formGroup = new FormGroup({
@@ -47,7 +47,15 @@ export class WorkspaceInput {
     });
   }
 
-  async save() {
+  protected closeDialog() {
+    this.signalApp.showWorkspaceInput.set(false);
+    this.signalApp.selectedWorkspace.set(null);
+    if (this.formGroup) {
+      this.formGroup.reset();
+    }
+  }
+
+  protected async save() {
     if (this.formGroup.invalid) {
       this.formGroup.markAllAsTouched();
       return;
@@ -71,11 +79,4 @@ export class WorkspaceInput {
     }
   }
 
-  closeDialog() {
-    this.signalApp.showWorkspaceInput.set(false);
-    this.signalApp.selectedWorkspace.set(null);
-    if (this.formGroup) {
-      this.formGroup.reset();
-    }
-  }
 }

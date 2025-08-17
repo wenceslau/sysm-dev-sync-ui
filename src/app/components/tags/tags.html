@@ -13,7 +13,7 @@
              pSize="small"
              placeholder="Tag search" type="text"/>
       @if (searchValue) {
-        <p-inputicon class="pi pi-times cursor-pointer" (click)="searchValue = ''; loadingTags()"/>
+        <p-inputicon class="pi pi-times cursor-pointer" (click)="searchValue = ''; loadTags()"/>
       }
     </p-iconfield>
   </div>

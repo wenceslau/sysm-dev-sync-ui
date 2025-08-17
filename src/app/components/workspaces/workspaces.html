@@ -7,7 +7,7 @@
              pSize="small"
              placeholder="Workspace search" type="text"/>
       @if (searchValue) {
-        <p-inputicon class="pi pi-times cursor-pointer" (click)="searchValue = ''; loadingWorkspace()"/>
+        <p-inputicon class="pi pi-times cursor-pointer" (click)="searchValue = ''; loadWorkspaces()"/>
       }
     </p-iconfield>
   </div>

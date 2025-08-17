@@ -34,7 +34,7 @@ export class Tags implements OnInit, OnDestroy {
         console.log('Refresh signal received, reloading tags...');
         // 2. When refreshing, clear the search bar and load all tags
         this.searchValue = '';
-        this.loadingTags();
+        this.loadTags();
         this.signalApp.refreshTags.set(false);
       }
     });
@@ -42,7 +42,7 @@ export class Tags implements OnInit, OnDestroy {
 
   ngOnInit() {
     // 3. Load all tags on initial component load
-    this.loadingTags();
+    this.loadTags();
 
     // 4. Set up the debounced search subscription
     this.searchSubscription = this.searchSubject.pipe(
@@ -86,11 +86,10 @@ export class Tags implements OnInit, OnDestroy {
     console.log('Lazy load event', $event);
     this.currentPage = $event.first / $event.rows;
 
-    this.loadingTags();
+    this.loadTags();
   }
 
-  // This method is now primarily for initial load and manual refreshes
-  protected async loadingTags(): Promise<void> {
+  protected async loadTags(): Promise<void> {
     this.isLoading = true;
     try {
       const searchRequest = this.createSearchRequest(this.searchValue, this.currentPage);
@@ -98,7 +97,7 @@ export class Tags implements OnInit, OnDestroy {
       this.tags = tagPageable.items;
       this.totalRecords = tagPageable.total;
     } catch (e) {
-      console.error('Failed to load tags:', e);
+      console.error('Failed to load tags:');
     } finally {
       this.isLoading = false;
     }

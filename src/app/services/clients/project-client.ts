@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {AbstractClient} from './abstract-client';
 import {map, Observable} from 'rxjs';
 import {parseISO} from 'date-fns';
+import {Workspace} from './workspace-client';
 
 
 export interface Project {
@@ -9,6 +10,7 @@ export interface Project {
   name: string;
   description: string;
   workspaceId: string;
+  workspace: Workspace;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -2,82 +2,113 @@
   <h1 class="text-2xl font-bold mb-4">{{ header }}</h1>
 </div>
 
-
 <div class="fixed flex flex-col gap-2 z-10 top-[50%] lg:right-[12%] sm:right-5" id="divToolbar">
-  <p-button (click)="signalApp.selectedProject.set(null)" [rounded]="true" class="hover:scale-110 bg-accent-color"
+  <p-button (click)="reset()"
+            [rounded]="true"
+            class="hover:scale-110"
             icon="pi pi-plus"/>
-
-  <p-button (click)="save()" [rounded]="true" class="hover:scale-110 bg-accent-color"
-            icon="pi pi-save"/>
 </div>
 
-<form [formGroup]="formGroup" class="grid gap-4 px-12 pt-4 mb-4 sm:grid-cols-1">
+@if (isLoading) {
 
-  <!-- Color Field -->
-  <div class="flex flex-col gap-2">
-    <label for="color">Workspace</label>
-    <!-- 1. Removed optionLabel and optionValue to use templates instead -->
-    <p-select [disabled]="true" [options]="workspaces" aria-describedby="color-help" class="w-full"
-              dataKey="id" formControlName="workspace" id="workspace" placeholder="Select a Workspace">
+  <div class="w-[750px] grid gap-4 px-12 pt-4 mb-4">
 
-      <!-- 2. This template defines how the *selected* item looks -->
-      <ng-template let-selectedOption pTemplate="selectedItem">
-        @if (selectedOption) {
+    <p-skeleton width="100%" height="80px"/>
+
+    <p-skeleton width="100%" height="80px"/>
+
+    <p-skeleton width="100%" height="400px"/>
+
+  </div>
+
+} @else {
+
+  <form [formGroup]="formGroup" class="grid gap-4 px-12 pt-4 mb-4 sm:grid-cols-1">
+
+    <!-- Color Field -->
+    <div class="flex flex-col gap-2">
+      <label for="color">Workspace</label>
+      <!-- 1. Removed optionLabel and optionValue to use templates instead -->
+      <p-select [disabled]="isEdit"
+                [options]="workspaces"
+                aria-describedby="color-help"
+                class="w-full"
+                dataKey="id"
+                formControlName="workspace"
+                id="workspace"
+                placeholder="Select a Workspace">
+
+        <!-- 2. This template defines how the *selected* item looks -->
+        <ng-template let-selectedOption pTemplate="selectedItem">
+          @if (selectedOption) {
+            <div class="flex items-center gap-2">
+              <i class="pi pi-warehouse" [ngStyle]="{'color': '#002b53'}" style="font-size: 0.9rem"></i>
+              <div>{{ selectedOption.name }}</div>
+            </div>
+          }
+        </ng-template>
+
+        <!-- 3. This template defines how each item in the *dropdown list* looks -->
+        <ng-template let-option pTemplate="item">
           <div class="flex items-center gap-2">
-            <i class="pi pi-warehouse" [ngStyle]="{'color': '#002b53'}" style="font-size: 0.9rem"></i>
-            <div>{{ selectedOption.name }}</div>
+            <i [ngStyle]="{'color': '#002b53'}" class="pi pi-warehouse" style="font-size: 0.9rem"></i>
+            <div>{{ option.name }}</div>
           </div>
+        </ng-template>
+
+      </p-select>
+      <p-message severity="error" size="small" variant="simple">
+        @if (formGroup.get('color')?.invalid && formGroup.get('color')?.touched) {
+          <span>Color is required.</span>
         }
-      </ng-template>
-
-      <!--      &lt;!&ndash; 3. This template defines how each item in the *dropdown list* looks &ndash;&gt;-->
-      <!--      <ng-template let-option pTemplate="item">-->
-      <!--        <div class="flex items-center gap-2">-->
-      <!--          <i [ngStyle]="{'color': '#002b53'}" class="pi pi-warehouse" style="font-size: 0.9rem"></i>-->
-      <!--          <div>{{ option.name }}</div>-->
-      <!--        </div>-->
-      <!--      </ng-template>-->
-
-    </p-select>
-    <p-message severity="error" size="small" variant="simple">
-      @if (formGroup.get('color')?.invalid && formGroup.get('color')?.touched) {
-        <span>Color is required.</span>
-      }
-    </p-message>
-  </div>
+      </p-message>
+    </div>
 
 
-  <div class="flex flex-col gap-2">
-    <label for="name">Project name</label>
-    <input aria-describedby="name-help" formControlName="name" id="name" pInputText/>
-    <p-message severity="error" size="small" variant="simple">
-      @if (formGroup.get('name')?.invalid && formGroup.get('name')?.touched) {
-        <span>Name is required (minimum 3 characters).</span>
-      }
-    </p-message>
-  </div>
+    <div class="flex flex-col gap-2">
+      <label for="name">Project name</label>
+      <input aria-describedby="name-help" formControlName="name" id="name" pInputText/>
+      <p-message severity="error" size="small" variant="simple">
+        @if (formGroup.get('name')?.invalid && formGroup.get('name')?.touched) {
+          <span>Name is required (minimum 3 characters).</span>
+        }
+      </p-message>
+    </div>
 
-  <!-- Description Field -->
-  <div class="flex flex-col gap-2">
-    <label for="description">Especifications</label>
-    <p-editor [style]="{ height: '320px' }" formControlName="description"/>
-    <p-message severity="error" size="small" variant="simple">
-      @if (formGroup.get('description')?.invalid && formGroup.get('description')?.touched) {
-        <span>Description is required.</span>
-      }
-    </p-message>
-  </div>
+    <!-- Description Field -->
+    <div class="flex flex-col gap-2">
+      <label for="description">Especifications</label>
+      <p-editor [style]="{ height: '300px' }" formControlName="description"/>
+      <p-message severity="error" size="small" variant="simple">
+        @if (formGroup.get('description')?.invalid && formGroup.get('description')?.touched) {
+          <span>Description is required.</span>
+        }
+      </p-message>
+    </div>
 
-  <div class="flex justify-end">
-    <p-button (click)="changeWorkspaceDialog = true" [label]="'Change workspace'" severity="secondary" size="small"/>
-  </div>
+    <div class="flex justify-end gap-2">
+      <p-button (click)="openChangeWorkspaceDialog()"
+                [disabled]="!isEdit"
+                [outlined]="true"
+                label="Change workspace"
+                severity="secondary"
+                size="small"
+                class="hover:scale-101"/>
+      <p-button (click)="save()"
+                [disabled]="!formGroup.valid || isSaving"
+                [label]="isSaving ? 'Saving...' : 'Save'"
+                [loading]="isSaving"
+                size="small"
+                class="hover:scale-101"/>
+    </div>
 
-</form>
+  </form>
+}
 
-<p-dialog [(visible)]="changeWorkspaceDialog" showHeader="false" [modal]="true" [style]="{ width: '30rem' }">
+<p-dialog [(visible)]="changeWorkspaceDialog" [modal]="true" [style]="{ width: '30rem' }" showHeader="false">
   <div class="flex flex-col gap-2 pt-6">
     <!-- 1. Removed optionLabel and optionValue to use templates instead -->
-    <p-select [(ngModel)]="selectedWorkspace" [options]="workspaces" aria-describedby="color-help" appendTo="body"
+    <p-select [(ngModel)]="selectedWorkspace" [options]="workspaces" appendTo="body" aria-describedby="color-help"
               class="w-full" dataKey="id" id="workspace"
               placeholder="Select a Workspace">
 

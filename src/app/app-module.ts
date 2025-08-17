@@ -49,14 +49,17 @@ import {Scroller} from "primeng/scroller";
 import {Message} from 'primeng/message';
 import {TableModule} from 'primeng/table';
 import {Checkbox} from "primeng/checkbox";
-import { WorkspaceInput } from './components/workspaces/workspace-input/workspace-input';
-import { WorkspaceAddMember } from './components/workspaces/workspace-add-member/workspace-add-member';
+import {WorkspaceInput} from './components/workspaces/workspace-input/workspace-input';
+import {WorkspaceAddMember} from './components/workspaces/workspace-add-member/workspace-add-member';
 import {AutoComplete} from 'primeng/autocomplete';
 import {Listbox} from "primeng/listbox";
-import { ProjectInput } from './components/projects/project-input/project-input';
+import {ProjectInput} from './components/projects/project-input/project-input';
 import {Editor} from "primeng/editor";
 import {Toast} from "primeng/toast";
 import {MessageService} from 'primeng/api';
+import {BlockUIModule} from 'primeng/blockui';
+import {Skeleton} from 'primeng/skeleton';
+
 
 const MyPreset = definePreset(Aura, {
   semantic: {
@@ -92,49 +95,51 @@ const MyPreset = definePreset(Aura, {
     WorkspaceAddMember,
     ProjectInput,
   ],
-    imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        AppRoutingModule,
-        Button,
-        Menubar,
-        PanelMenu,
-        CommonModule,
-        ButtonModule,
-        StyleClassModule,
-        FormsModule,
-        SelectButtonModule,
-        DrawerModule,
-        ToggleSwitchModule,
-        RadioButtonModule,
-        RippleModule,
-        ButtonModule,
-        IconField,
-        InputIcon,
-        InputText,
-        OverlayBadge,
-        Avatar,
-        NgOptimizedImage,
-        DataViewModule,
-        Divider,
-        Toolbar,
-        ProgressSpinner,
-        ProgressSpinnerModule,
-        Dialog,
-        ReactiveFormsModule,
-        ColorPicker,
-        Textarea,
-        Select,
-        Tooltip,
-        Scroller,
-        Message,
-        TableModule,
-        Checkbox,
-        AutoComplete,
-        Listbox,
-        Editor,
-        Toast
-    ],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    AppRoutingModule,
+    Button,
+    Menubar,
+    PanelMenu,
+    CommonModule,
+    ButtonModule,
+    StyleClassModule,
+    FormsModule,
+    SelectButtonModule,
+    DrawerModule,
+    ToggleSwitchModule,
+    RadioButtonModule,
+    RippleModule,
+    ButtonModule,
+    IconField,
+    InputIcon,
+    InputText,
+    OverlayBadge,
+    Avatar,
+    NgOptimizedImage,
+    DataViewModule,
+    Divider,
+    Toolbar,
+    ProgressSpinner,
+    ProgressSpinnerModule,
+    Dialog,
+    ReactiveFormsModule,
+    ColorPicker,
+    Textarea,
+    Select,
+    Tooltip,
+    Scroller,
+    Message,
+    TableModule,
+    Checkbox,
+    AutoComplete,
+    Listbox,
+    Editor,
+    Toast,
+    BlockUIModule,
+    Skeleton
+  ],
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideAnimationsAsync(),

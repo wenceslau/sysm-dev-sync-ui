@@ -24,8 +24,10 @@
             <div class="py-6">
 
               @for (project of items; track project.id) {
-                <div (click)="editProject(project)" class="flex items-center mx-4 p-4 rounded-lg hover:scale-101
-                transition-all gap-6 bg-dark-royal-blue-50 cursor-pointer">
+                <div (click)="editProject(project)"
+                     [ngClass]="{'border-l-2 border-dark-royal-blue-100': project.id === selectedProject?.id}"
+                     class="flex items-center mx-4 p-4 rounded-lg hover:scale-101 transition-all gap-6
+                     bg-dark-royal-blue-50 cursor-pointer">
 
                   <div class="flex-1 flex flex-col space-y-3 min-w-0">
                     <div class="flex items-center space-x-5">
@@ -33,7 +35,7 @@
                         {{ project.name }}
                       </p>
                     </div>
-                    <span id="tagDescription" class="block text-sm truncate">
+                    <span class="block text-sm truncate">
                       Started at: {{ project.createdAt | date: 'dd/MM/yyyy' }}
                     </span>
                   </div>

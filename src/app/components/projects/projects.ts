@@ -19,6 +19,7 @@ export class Projects implements OnInit, OnDestroy {
   protected signalApp = inject(SignalsApp);
 
   protected projects: Project[] = [];
+  protected selectedProject: Project | null = null;
 
   protected searchSubscription!: Subscription;
   protected searchSubject = new Subject<string>();
@@ -74,6 +75,7 @@ export class Projects implements OnInit, OnDestroy {
   }
 
   protected editProject(project: Project) {
+    this.selectedProject = project;
     this.signalApp.selectedProject.set(project);
   }
 
@@ -85,6 +87,8 @@ export class Projects implements OnInit, OnDestroy {
       filters.set('description', term);
       filters.set('workspaceId', term);
     }
+    filters.set('sort', 'createdAt');
+    filters.set('direction', 'desc');
     return {queryType: 'or', filters: filters, pageNumber: pageNumber, pageSize: this.rowsPage};
   }
 

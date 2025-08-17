@@ -17,15 +17,17 @@ export class ProjectInput {
   private workspaceClient = inject(WorkspaceClient);
 
   protected formGroup!: FormGroup;
+  protected isLoading = false;
   protected isSaving = false;
+  protected isEdit = false
   protected header = 'New Project';
+  private reloadProject = false;
 
   protected workspaces: Workspace[] = [];
 
   protected changeWorkspaceDialog = false;
   protected selectedWorkspace: Workspace | null = null;
   protected selectedProject: Project | null = null;
-
 
   constructor() {
     console.log("ProjectInput constructor");
@@ -36,13 +38,27 @@ export class ProjectInput {
       this.initFormGroup();
 
       // Ensure the form and colors are ready before patching values
-      if (this.formGroup) {
-        if (this.selectedProject) {
-          this.header = `Edit Project: ${this.selectedProject.name}`;
-          this.formGroup.patchValue(this.selectedProject);
-        }
+      if (this.formGroup && this.selectedProject) {
+        this.header = `Edit Project: ${this.selectedProject.name}`;
+        this.loadProject(this.selectedProject.id);
       }
     });
+  }
+
+  protected reset() {
+    this.isEdit = false;
+    this.signalApp.selectedProject.set(null);
+    if (this.formGroup) {
+      this.formGroup.reset();
+    }
+  }
+
+  protected openChangeWorkspaceDialog() {
+    if (!this.selectedProject) {
+      return;
+    }
+    this.changeWorkspaceDialog = true;
+    this.selectedWorkspace = this.selectedProject.workspace;
   }
 
   private initFormGroup() {
@@ -59,7 +75,54 @@ export class ProjectInput {
     this.workspaces = await this.workspaceClient.listAsync({}, "/list");
   }
 
-  async save() {
+  private async loadProject(id: string) {
+    if (this.reloadProject){
+      this.isLoading = true;
+      this.selectedProject = await this.projectClient.getByIdAsync(id);
+      this.isLoading = false;
+    }
+    if (this.selectedProject) {
+      this.formGroup.patchValue(this.selectedProject);
+      this.isEdit = true;
+    }
+  }
+
+  protected async changeWorkspace() {
+    if (!this.selectedWorkspace) {
+      return;
+    }
+
+    if (!this.selectedProject) {
+      return;
+    }
+
+    this.isSaving = true;
+
+    try {
+      await this.projectClient.updatePatchAsync(this.selectedProject.id, {}, "/workspace/" + this.selectedWorkspace.id);
+
+      const projectUpdated: Partial<Project> = {
+        id: this.selectedProject.id,
+        name: this.selectedProject.name,
+        description: this.selectedProject.description,
+        workspaceId: this.selectedWorkspace.id,
+        workspace: this.selectedWorkspace,
+      };
+
+      this.formGroup.patchValue(projectUpdated);
+      this.changeWorkspaceDialog = false;
+      this.selectedWorkspace = null;
+
+      this.signalApp.refreshProjects.set(true);
+
+    } catch (error) {
+      console.error("Failed to change workspace on the project");
+    } finally {
+      this.isSaving = false;
+    }
+  }
+
+  protected async save() {
     if (this.formGroup.invalid) {
       this.formGroup.markAllAsTouched();
       return;
@@ -82,7 +145,8 @@ export class ProjectInput {
         await this.projectClient.saveAsync(projectPayload as Project);
       }
       this.signalApp.refreshProjects.set(true);
-      this.reset();
+
+      // this.reset();
     } catch (error) {
       console.error("Failed to save projec", error);
     } finally {
@@ -90,33 +154,4 @@ export class ProjectInput {
     }
   }
 
-  async changeWorkspace() {
-    if (!this.selectedWorkspace) {
-      return;
-    }
-
-    if (!this.selectedProject) {
-      return;
-    }
-
-    this.isSaving = true;
-
-    try {
-      await this.projectClient.updatePatchAsync(this.selectedProject.id, {}, "/workspace/"+this.selectedWorkspace.id);
-      this.signalApp.refreshProjects.set(true);
-      this.changeWorkspaceDialog = false;
-    } catch (error) {
-      console.error("Failed to save projec", error);
-    } finally {
-      this.isSaving = false;
-    }
-  }
-
-
-  reset() {
-    this.signalApp.selectedProject.set(null);
-    if (this.formGroup) {
-      this.formGroup.reset();
-    }
-  }
 }

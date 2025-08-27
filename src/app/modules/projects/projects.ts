@@ -1,11 +1,11 @@
-import {Component, effect, inject, OnDestroy, OnInit} from '@angular/core';
-import {Tag, TagClient} from '../../services/clients/tag-client';
-import {SignalsApp} from '../../services/signals-app';
+import {Component, effect, inject, OnDestroy, OnInit, signal, ViewChild} from '@angular/core';
+import {SignalApp} from '../../services/signal-app';
 import {Subject, Subscription} from 'rxjs';
 import {debounceTime, distinctUntilChanged, switchMap, tap} from 'rxjs/operators';
 import {DataViewLazyLoadEvent} from 'primeng/dataview';
-import {SearchRequest} from '../../services/clients/abstract-client';
-import {Project, ProjectClient} from '../../services/clients/project-client';
+import {ProjectInput} from './project-input/project-input';
+import {HttpApp, RequestData} from '../../services/http-app';
+import {Pageable, Project} from '../../application/objects';
 
 @Component({
   selector: 'app-projects',
@@ -15,8 +15,10 @@ import {Project, ProjectClient} from '../../services/clients/project-client';
 })
 export class Projects implements OnInit, OnDestroy {
 
-  private projectClient = inject(ProjectClient);
-  protected signalApp = inject(SignalsApp);
+  private modulePath: string = "/projects"
+
+  private httpApp = inject(HttpApp);
+  protected signalApp = inject(SignalApp);
 
   protected projects: Project[] = [];
   protected selectedProject: Project | null = null;
@@ -54,7 +56,7 @@ export class Projects implements OnInit, OnDestroy {
       // Set loading state before making the API call
       tap(() => this.isLoading = true),
       // Cancel previous pending requests and switch to the new one
-      switchMap(searchTerm => this.projectClient.pageAsync(this.createSearchRequest(searchTerm, 0)))
+      switchMap(searchTerm => this.httpApp.getAsync<Pageable>(this.createSearchReqData(searchTerm, 0)))
     ).subscribe({
       next: (tagPageable) => {
         this.projects = tagPageable.items;
@@ -79,19 +81,6 @@ export class Projects implements OnInit, OnDestroy {
     this.signalApp.selectedProject.set(project);
   }
 
-  protected createSearchRequest(term: string, pageNumber: number): SearchRequest {
-    const filters = new Map<string, string>();
-    if (term) {
-      filters.set('id', term);
-      filters.set('name', term);
-      filters.set('description', term);
-      filters.set('workspaceId', term);
-    }
-    filters.set('sort', 'createdAt');
-    filters.set('direction', 'desc');
-    return {queryType: 'or', filters: filters, pageNumber: pageNumber, pageSize: this.rowsPage};
-  }
-
   protected onSearchInput(): void {
     this.searchSubject.next(this.searchValue);
   }
@@ -106,8 +95,8 @@ export class Projects implements OnInit, OnDestroy {
   protected async loadProjects(): Promise<void> {
     this.isLoading = true;
     try {
-      const searchRequest = this.createSearchRequest(this.searchValue, this.currentPage);
-      const tagPageable = await this.projectClient.pageAsync(searchRequest);
+      const searchReqData = this.createSearchReqData(this.searchValue, this.currentPage);
+      const tagPageable = await this.httpApp.getAsync<Pageable>(searchReqData);
       this.projects = tagPageable.items;
       this.totalRecords = tagPageable.total;
     } catch (e) {
@@ -116,4 +105,26 @@ export class Projects implements OnInit, OnDestroy {
       this.isLoading = false;
     }
   }
+
+  @ViewChild(ProjectInput) projectInput!: ProjectInput;
+
+  resetInput() {
+    this.projectInput.reset();
+  }
+
+  private createSearchReqData(term: string, pageNumber: number): RequestData {
+    const filters = new Map<string, string>();
+    if (term) {
+      filters.set('id', term);
+      filters.set('name', term);
+      filters.set('description', term);
+      filters.set('workspaceId', term);
+    }
+    let searchRequest = {queryType: 'or', filters: filters, pageNumber: pageNumber, pageSize: this.rowsPage};
+
+    let reqData = new RequestData(this.modulePath, searchRequest);
+    reqData.prepareRequestData(searchRequest);
+    return reqData;
+  }
+
 }

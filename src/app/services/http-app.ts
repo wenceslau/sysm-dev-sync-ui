@@ -1,8 +1,9 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {catchError, Observable, tap, throwError} from 'rxjs';
+import {catchError, firstValueFrom, Observable, tap, throwError} from 'rxjs';
 import {LayoutState} from './layout-state';
-import {SignalsApp} from './signals-app';
+import {SignalApp} from './signal-app';
+import {SearchRequest} from '../application/objects';
 
 // It's a best practice to move the API URL to environment files
 // For example, in src/environments/environment.ts
@@ -14,7 +15,7 @@ import {SignalsApp} from './signals-app';
 })
 export class HttpApp {
   private http = inject(HttpClient);
-  private signalApp = inject(SignalsApp);
+  private signalApp = inject(SignalApp);
 
   // Consider moving this to your environment files
   private readonly apiUrl = "http://localhost:8081/dev-sync/api";
@@ -44,8 +45,28 @@ export class HttpApp {
     return this.executeHttpRequest<T>(requestData);
   }
 
+  async getAsync<T>(requestData: RequestData): Promise<T> {
+    return await firstValueFrom(this.get<T>(requestData));
+  }
+
+  async postAsync<T>(requestData: RequestData): Promise<T> {
+    return await firstValueFrom(this.post<T>(requestData));
+  }
+
+  async putAsync<T>(requestData: RequestData): Promise<T> {
+    return await firstValueFrom(this.put<T>(requestData));
+  }
+
+  async patchAsync<T>(requestData: RequestData): Promise<T> {
+    return await firstValueFrom(this.patch<T>(requestData));
+  }
+
+  async deleteAsync<T>(requestData: RequestData): Promise<T> {
+    return await firstValueFrom(this.delete<T>(requestData));
+  }
+
   private executeHttpRequest<T>(requestData: RequestData): Observable<T> {
-    const httpUrlPath = `${this.apiUrl}${requestData.mapping || ''}`;
+    const httpUrlPath = `${this.apiUrl}${requestData.customPath || ''}`;
     const options = {
       headers: this.getHeaders(requestData),
       params: requestData.httpParams
@@ -78,11 +99,15 @@ export class HttpApp {
     // Use the pipe operator for side-effects (logging) and error handling
     return request$.pipe(
       tap(response => {
-        console.log(`HTTP Success: ${requestData.httpVerb} ${requestData.mapping}`);
+        console.log(`HTTP Success: ${requestData.httpVerb} ${requestData.customPath}`);
       }),
       catchError(error => {
-        console.error(`HTTP Error: ${requestData.httpVerb} ${requestData.mapping}`, error);
-        this.signalApp.message.set({severity: 'error', content: error.message});
+        console.error(`HTTP Error: ${requestData.httpVerb} ${requestData.customPath}`, error);
+        let content = error.message;
+        if (error.error && error.error.message) {
+          content = error.error.message;
+        }
+        this.signalApp.message.set({severity: 'error', content: content});
         return throwError(() => error);
       })
     );
@@ -112,13 +137,21 @@ export class RequestData {
   public contentType: ContentType = ContentType.JSON;
   public customHeaders: Map<string, string> = new Map();
   public payload: any;
-  public mapping: string = "";
+  public customPath: string = "";
   public blob: boolean = false;
 
-  constructor(mapping?: string, payload?: any) {
-    if (mapping) {
-      this.mapping = mapping;
+  constructor(customPath: string, payload?: any) {
+    if (customPath === "") {
+      throw new Error("Custom path is required");
     }
+    if (!customPath.startsWith("/")) {
+      throw new Error("Custom path must start with /");
+    }
+    if (customPath.endsWith("/")) {
+      throw new Error("Custom path must not end with /");
+    }
+
+    this.customPath = customPath;
     if (payload) {
       this.payload = payload;
     }
@@ -139,6 +172,35 @@ export class RequestData {
   clearCustomHeaders() {
     this.customHeaders = new Map();
   }
+
+  prepareRequestData(search: SearchRequest) {
+    if (!search){
+      throw new Error("Search is required");
+    }
+    this.clearParameters()
+
+    if (search.pageNumber !== undefined) {
+      this.addParameter('pageNumber', search.pageNumber);
+    }
+    if (search.pageSize !== undefined) {
+      this.addParameter('pageSize', search.pageSize);
+    }
+    if (search.sort) {
+      this.addParameter('sort', search.sort);
+    }
+    if (search.direction) {
+      this.addParameter('direction', search.direction);
+    }
+    if (search.queryType) {
+      this.addParameter('queryType', search.queryType);
+    }
+    if (search.filters) {
+      search.filters.forEach((value, key) => {
+        this.addParameter(key, value);
+      });
+    }
+  }
+
 }
 
 export enum HttpVerb {

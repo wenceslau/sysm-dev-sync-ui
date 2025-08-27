@@ -1,10 +1,10 @@
 import {Component, effect, inject, OnDestroy, OnInit} from '@angular/core';
-import {Tag, TagClient} from '../../services/clients/tag-client';
-import {SignalsApp} from '../../services/signals-app';
+import {SignalApp} from '../../services/signal-app';
 import {Subject, Subscription} from 'rxjs';
 import {debounceTime, distinctUntilChanged, switchMap, tap} from 'rxjs/operators';
-import {SearchRequest} from '../../services/clients/abstract-client';
 import {DataViewLazyLoadEvent} from 'primeng/dataview';
+import {HttpApp, RequestData} from '../../services/http-app';
+import {Pageable, Tag} from '../../application/objects';
 
 @Component({
   selector: 'app-tags',
@@ -14,14 +14,16 @@ import {DataViewLazyLoadEvent} from 'primeng/dataview';
 })
 export class Tags implements OnInit, OnDestroy {
 
+  private modulePath = "/tags";
+
   rowsPage = 10;
   currentPage = 0;
   totalRecords = 0;
   isLoading = true;
 
   tags: Tag[] = [];
-  tagClient = inject(TagClient);
-  signalApp = inject(SignalsApp);
+  httpApp = inject(HttpApp);
+  signalApp = inject(SignalApp);
 
   // 1. RxJS Subject to handle search term changes
   protected searchSubscription!: Subscription;
@@ -53,7 +55,7 @@ export class Tags implements OnInit, OnDestroy {
       // Set loading state before making the API call
       tap(() => this.isLoading = true),
       // Cancel previous pending requests and switch to the new one
-      switchMap(searchTerm => this.tagClient.pageAsync(this.createSearchRequest(searchTerm, 0)))
+      switchMap(searchTerm => this.httpApp.getAsync<Pageable>(this.createSearchReqData(searchTerm, 0)))
     ).subscribe({
       next: (tagPageable) => {
         this.tags = tagPageable.items;
@@ -89,11 +91,11 @@ export class Tags implements OnInit, OnDestroy {
     this.loadTags();
   }
 
-  protected async loadTags(): Promise<void> {
+  async loadTags(): Promise<void> {
     this.isLoading = true;
     try {
-      const searchRequest = this.createSearchRequest(this.searchValue, this.currentPage);
-      const tagPageable = await this.tagClient.pageAsync(searchRequest);
+      const searchReqData = this.createSearchReqData(this.searchValue, this.currentPage);
+      const tagPageable = await this.httpApp.getAsync<Pageable>(searchReqData);
       this.tags = tagPageable.items;
       this.totalRecords = tagPageable.total;
     } catch (e) {
@@ -103,7 +105,7 @@ export class Tags implements OnInit, OnDestroy {
     }
   }
 
-  protected createSearchRequest(term: string, pageNumber: number): SearchRequest {
+  private createSearchReqData(term: string, pageNumber: number): RequestData {
     const filters = new Map<string, string>();
     if (term) {
       filters.set('id', term);
@@ -111,6 +113,10 @@ export class Tags implements OnInit, OnDestroy {
       filters.set('description', term);
       filters.set('category', term);
     }
-    return {queryType: 'or', filters: filters, pageNumber: pageNumber, pageSize: this.rowsPage};
+    let searchRequest = {queryType: 'or', filters: filters, pageNumber: pageNumber, pageSize: this.rowsPage};
+
+    let reqData = new RequestData(this.modulePath, searchRequest);
+    reqData.prepareRequestData(searchRequest);
+    return reqData;
   }
 }

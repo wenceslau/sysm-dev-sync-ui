@@ -1,11 +1,11 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {Home} from './components/home/home';
-import {Users} from './components/users/users';
-import {Questions} from './components/questions/questions';
-import {Projects} from './components/projects/projects';
-import {Workspaces} from './components/workspaces/workspaces';
-import {Tags} from './components/tags/tags';
+import {Tags} from './modules/tags/tags';
+import {Workspaces} from './modules/workspaces/workspaces';
+import {Questions} from './modules/questions/questions';
+import {Projects} from './modules/projects/projects';
+import {Users} from './modules/users/users';
+import {Home} from './application/home/home';
 
 const routes: Routes = [
   {

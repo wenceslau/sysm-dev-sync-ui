@@ -1,9 +1,8 @@
 import {Component, effect, inject} from '@angular/core';
-import {SignalsApp} from '../../../services/signals-app';
-import {Workspace, WorkspaceClient} from '../../../services/clients/workspace-client';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {User, UserClient} from '../../../services/clients/user-client';
+import {SignalApp} from '../../../services/signal-app';
 import {AutoCompleteCompleteEvent} from 'primeng/autocomplete';
+import {HttpApp, RequestData} from '../../../services/http-app';
+import {User, Workspace} from '../../../application/objects';
 
 @Component({
   selector: 'app-workspace-add-member',
@@ -13,9 +12,11 @@ import {AutoCompleteCompleteEvent} from 'primeng/autocomplete';
 })
 export class WorkspaceAddMember {
 
-  protected signalApp = inject(SignalsApp);
-  private userClient = inject(UserClient);
-  private workspaceClient = inject(WorkspaceClient);
+  private workspacePath: string = "/workspaces";
+  private userPath: string = "/users";
+
+  protected signalApp = inject(SignalApp);
+  private httpApp = inject(HttpApp);
 
   protected selectedMember: User | null = null;
   protected selectedMemberWorkspace: User | null = null;
@@ -72,7 +73,8 @@ export class WorkspaceAddMember {
 
     try {
       //Add member to workspace
-      await this.workspaceClient.addMember(this.selectedWorkspace!.id, this.selectedMember!.id);
+      let requestData = new RequestData(this.workspacePath + "/" + this.selectedWorkspace!.id + "/members/"+ this.selectedMember?.id);
+      await this.httpApp.putAsync<void>(requestData);
 
       // Get updated workspace
       this.loadWorkspace();
@@ -93,7 +95,8 @@ export class WorkspaceAddMember {
     this.isDeleting = true;
     try {
       //Add member to workspace
-      await this.workspaceClient.removeMember(this.selectedWorkspace!.id, this.selectedMemberWorkspace!.id);
+      let requestData = new RequestData(this.workspacePath + "/" + this.selectedWorkspace!.id + "/members/" + this.selectedMemberWorkspace!.id);
+      await this.httpApp.deleteAsync<void>(requestData);
 
       // Get updated workspace
       this.loadWorkspace();
@@ -111,7 +114,8 @@ export class WorkspaceAddMember {
   }
 
   private async loadUsers() {
-    this.users = await this.userClient.listAsync({}, "/list");
+    let requestData = new RequestData(this.userPath + "/list");
+    this.users = await this.httpApp.getAsync<User[]>(requestData);
 
     //remove from the users list the members exist on the selected workspace
     this.users = this.users.filter(user => !this.selectedWorkspace?.members.some(member => member.id === user.id));
@@ -119,7 +123,8 @@ export class WorkspaceAddMember {
 
   private async loadWorkspace() {
     if (this.selectedWorkspace) {
-      this.selectedWorkspace = await this.workspaceClient.getByIdAsync(this.selectedWorkspace.id);
+      let requestData = new RequestData(this.workspacePath + "/" + this.selectedWorkspace.id);
+      this.selectedWorkspace = await this.httpApp.getAsync(requestData);
     }
   }
 

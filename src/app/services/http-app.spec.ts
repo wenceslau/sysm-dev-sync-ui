@@ -38,7 +38,7 @@ describe('HttpApp', () => {
       const testPath = '/test-get';
 
       const requestData = new RequestData();
-      requestData.mapping = testPath;
+      requestData.customPath = testPath;
 
       service.get<MockData>(requestData).subscribe(data => {
         expect(data).toEqual(testData);
@@ -58,7 +58,7 @@ describe('HttpApp', () => {
       const testPath = '/test-post';
 
       const requestData = new RequestData();
-      requestData.mapping = testPath;
+      requestData.customPath = testPath;
       requestData.payload = testPayload;
 
       service.post<MockData>(requestData).subscribe(response => {
@@ -78,7 +78,7 @@ describe('HttpApp', () => {
 
     beforeEach(() => {
       requestData = new RequestData();
-      requestData.mapping = testPath;
+      requestData.customPath = testPath;
     });
 
     it('should add Content-Type and custom headers to the request', () => {
@@ -101,7 +101,7 @@ describe('HttpApp', () => {
       const errorMessage = '404 Not Found';
 
       const requestData = new RequestData();
-      requestData.mapping = testPath;
+      requestData.customPath = testPath;
 
       service.get<any>(requestData).subscribe({
         next: () => fail('should have failed with a 404 error'),

@@ -1,7 +1,8 @@
 import {Component, effect, inject, OnInit} from '@angular/core';
-import {SignalsApp} from '../../../services/signals-app';
+import {SignalApp} from '../../../services/signal-app';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {Tag, TagClient, TagColor} from '../../../services/clients/tag-client';
+import {CreateResponse, Tag, TagColor} from '../../../application/objects';
+import {HttpApp, RequestData} from '../../../services/http-app';
 
 @Component({
   selector: 'app-form-input',
@@ -13,8 +14,8 @@ export class FormInput implements OnInit {
 
   protected colors: TagColor[] = [];
 
-  protected signalApp = inject(SignalsApp);
-  private tagClient = inject(TagClient);
+  protected signalApp = inject(SignalApp);
+  private httpApp = inject(HttpApp);
 
   protected visible: boolean = false;
   protected formGroup!: FormGroup;
@@ -40,7 +41,7 @@ export class FormInput implements OnInit {
 
   ngOnInit() {
     // 1. Initialize the color array first
-    this.colors = this.tagClient.tagColors();
+    this.colors = this.tagColors();
   }
 
   private initFormGroup() {
@@ -66,9 +67,11 @@ export class FormInput implements OnInit {
 
     try {
       if (formValue.id) {
-        await this.tagClient.updateAsync(formValue.id.toString(), formValue);
+        let requestData = new RequestData("/tags/" + formValue.id, formValue);
+        await this.httpApp.putAsync<void>(requestData);
       } else {
-        await this.tagClient.saveAsync(formValue);
+        let requestData = new RequestData("/tags", formValue);
+        await this.httpApp.postAsync<CreateResponse>(requestData);
       }
       this.signalApp.refreshTags.set(true);
       this.closeDialog();
@@ -85,5 +88,28 @@ export class FormInput implements OnInit {
     if (this.formGroup) {
       this.formGroup.reset();
     }
+  }
+
+  tagColors(): TagColor[] {
+    return [
+      {name: "white", color: "#ffffff"},
+      {name: "black", color: "#000000"},
+      {name: "red", color: "#ff0000"},
+      {name: "green", color: "#00ff00"},
+      {name: "blue", color: "#0000ff"},
+      {name: "yellow", color: "#ffff00"},
+      {name: "purple", color: "#ff00ff"},
+      {name: "orange", color: "#ffa500"},
+      {name: "pink", color: "#ffc0cb"},
+      {name: "brown", color: "#a52a2a"},
+      {name: "gray", color: "#808080"},
+      {name: "cyan", color: "#00ffff"},
+      {name: "magenta", color: "#ff00ff"},
+      {name: "lime", color: "#00ff00"},
+      {name: "teal", color: "#008080"},
+      {name: "olive", color: "#808000"},
+      {name: "navy", color: "#000080"},
+      {name: "nblue", color: "#2496ED"}
+    ]
   }
 }

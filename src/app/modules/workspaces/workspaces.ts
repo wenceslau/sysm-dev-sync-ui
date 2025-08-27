@@ -1,11 +1,11 @@
 import {Component, effect, inject, OnDestroy, OnInit} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
-import {Tag, TagClient} from '../../services/clients/tag-client';
-import {SignalsApp} from '../../services/signals-app';
-import {Workspace, WorkspaceClient} from '../../services/clients/workspace-client';
-import {SearchRequest} from '../../services/clients/abstract-client';
+import {SignalApp} from '../../services/signal-app';
 import {debounceTime, distinctUntilChanged, switchMap, tap} from 'rxjs/operators';
 import {Router} from '@angular/router';
+import {HttpApp, RequestData} from '../../services/http-app';
+import {Tag} from 'primeng/tag';
+import {Pageable, Workspace} from '../../application/objects';
 
 @Component({
   selector: 'app-workspaces',
@@ -15,9 +15,11 @@ import {Router} from '@angular/router';
 })
 export class Workspaces implements OnInit, OnDestroy {
 
-  private workspaceClient = inject(WorkspaceClient);
+  private modulePath: string = "/workspaces"
+
+  private httpApp = inject(HttpApp);
   private router = inject(Router);
-  protected signalApp = inject(SignalsApp);
+  protected signalApp = inject(SignalApp);
 
   protected searchSubscription!: Subscription;
   protected searchSubject = new Subject<string>();
@@ -56,7 +58,7 @@ export class Workspaces implements OnInit, OnDestroy {
       // Set loading state before making the API call
       tap(() => this.isLoading = true),
       // Cancel previous pending requests and switch to the new one
-      switchMap(searchTerm => this.workspaceClient.pageAsync(this.createSearchRequest(searchTerm, 0)))
+      switchMap(searchTerm => this.httpApp.getAsync<Pageable>(this.createSearchReqData(searchTerm, 0)))
     ).subscribe({
       next: (tagPageable) => {
         this.workspaces = tagPageable.items;
@@ -90,17 +92,6 @@ export class Workspaces implements OnInit, OnDestroy {
     this.router.navigate([route]);
   }
 
-  protected createSearchRequest(term: string, pageNumber: number): SearchRequest {
-    const filters = new Map<string, string>();
-    if (term) {
-      filters.set('id', term);
-      filters.set('name', term);
-      filters.set('description', term);
-      filters.set('ownerName', term);
-    }
-    return {queryType: 'or', filters: filters, pageNumber: pageNumber, pageSize: this.rowsPage};
-  }
-
   protected onSearchInput(): void {
     this.searchSubject.next(this.searchValue);
   }
@@ -108,8 +99,8 @@ export class Workspaces implements OnInit, OnDestroy {
   protected async loadWorkspaces(): Promise<void> {
     this.isLoading = true;
     try {
-      const searchRequest = this.createSearchRequest(this.searchValue, this.currentPage);
-      const tagPageable = await this.workspaceClient.pageAsync(searchRequest);
+      const searchReqData = this.createSearchReqData(this.searchValue, this.currentPage);
+      const tagPageable = await this.httpApp.getAsync<Pageable>(searchReqData);
       this.workspaces = tagPageable.items;
       this.totalRecords = tagPageable.total;
     } catch (e) {
@@ -117,6 +108,21 @@ export class Workspaces implements OnInit, OnDestroy {
     } finally {
       this.isLoading = false;
     }
+  }
+
+  private createSearchReqData(term: string, pageNumber: number): RequestData {
+    const filters = new Map<string, string>();
+    if (term) {
+      filters.set('id', term);
+      filters.set('name', term);
+      filters.set('description', term);
+      filters.set('ownerName', term);
+    }
+    let searchRequest = {queryType: 'or', filters: filters, pageNumber: pageNumber, pageSize: this.rowsPage};
+
+    let reqData = new RequestData(this.modulePath, searchRequest);
+    reqData.prepareRequestData(searchRequest);
+    return reqData;
   }
 
 }

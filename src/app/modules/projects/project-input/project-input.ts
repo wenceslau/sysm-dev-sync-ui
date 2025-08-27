@@ -1,9 +1,8 @@
-import {Component, effect, inject} from '@angular/core';
-import {SignalsApp} from '../../../services/signals-app';
+import {Component, effect, EventEmitter, inject, input, Input, Output} from '@angular/core';
+import {SignalApp} from '../../../services/signal-app';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {Project, ProjectClient} from '../../../services/clients/project-client';
-import {Workspace, WorkspaceClient} from '../../../services/clients/workspace-client';
-import {User} from '../../../services/clients/user-client';
+import {HttpApp, RequestData} from '../../../services/http-app';
+import {CreateResponse, Project, Workspace} from '../../../application/objects';
 
 @Component({
   selector: 'app-project-input',
@@ -12,9 +11,12 @@ import {User} from '../../../services/clients/user-client';
   styleUrl: './project-input.scss'
 })
 export class ProjectInput {
-  protected signalApp = inject(SignalsApp);
-  private projectClient = inject(ProjectClient);
-  private workspaceClient = inject(WorkspaceClient);
+
+  private workspacePath: string = "/workspaces";
+  private projectPath: string = "/projects";
+
+  protected signalApp = inject(SignalApp);
+  private httpApp = inject(HttpApp);
 
   protected formGroup!: FormGroup;
   protected isLoading = false;
@@ -45,12 +47,9 @@ export class ProjectInput {
     });
   }
 
-  protected reset() {
+  reset() {
     this.isEdit = false;
-    this.signalApp.selectedProject.set(null);
-    if (this.formGroup) {
-      this.formGroup.reset();
-    }
+    this.initFormGroup();
   }
 
   protected openChangeWorkspaceDialog() {
@@ -62,7 +61,6 @@ export class ProjectInput {
   }
 
   private initFormGroup() {
-    // 2. Define the form group
     this.formGroup = new FormGroup({
       id: new FormControl<string | null>(null),
       workspace: new FormControl<Workspace | null>(null),
@@ -72,13 +70,15 @@ export class ProjectInput {
   }
 
   private async loadWorkspaces() {
-    this.workspaces = await this.workspaceClient.listAsync({}, "/list");
+    let requestData = new RequestData(this.workspacePath + "/list");
+    this.workspaces = await this.httpApp.getAsync<Workspace[]>(requestData);
   }
 
-  private async loadProject(id: string) {
-    if (this.reloadProject){
+  private async loadProject(id: string, reloadProject: boolean = false) {
+    if (reloadProject) {
       this.isLoading = true;
-      this.selectedProject = await this.projectClient.getByIdAsync(id);
+      let requestData = new RequestData(this.projectPath + "/" + id);
+      this.selectedProject = await this.httpApp.getAsync<Project>(requestData);
       this.isLoading = false;
     }
     if (this.selectedProject) {
@@ -99,7 +99,9 @@ export class ProjectInput {
     this.isSaving = true;
 
     try {
-      await this.projectClient.updatePatchAsync(this.selectedProject.id, {}, "/workspace/" + this.selectedWorkspace.id);
+      let fullPath = this.projectPath + "/" + this.selectedProject.id + "/workspace/" + this.selectedWorkspace.id;
+      let requestData = new RequestData(fullPath);
+      await this.httpApp.patchAsync<void>(requestData);
 
       const projectUpdated: Partial<Project> = {
         id: this.selectedProject.id,
@@ -140,18 +142,21 @@ export class ProjectInput {
 
     try {
       if (projectPayload.id) {
-        await this.projectClient.updateAsync(projectPayload.id, projectPayload as Project);
+        let requestData = new RequestData(this.projectPath + "/" + projectPayload.id, projectPayload);
+        await this.httpApp.putAsync<void>(requestData);
       } else {
-        await this.projectClient.saveAsync(projectPayload as Project);
+        let requestData = new RequestData(this.projectPath, projectPayload);
+        let response = await this.httpApp.postAsync<CreateResponse>(requestData);
+        await this.loadProject(response.id, true);
       }
       this.signalApp.refreshProjects.set(true);
 
-      // this.reset();
     } catch (error) {
       console.error("Failed to save projec", error);
     } finally {
       this.isSaving = false;
     }
   }
+
 
 }

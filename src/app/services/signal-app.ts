@@ -1,12 +1,11 @@
-import {Injectable, Signal, signal} from '@angular/core';
-import {Tag} from './clients/tag-client';
-import {Workspace} from './clients/workspace-client';
-import {Project} from './clients/project-client';
+import {Injectable, signal} from '@angular/core';
+import {Project, Tag, Workspace} from '../application/objects';
+
 
 @Injectable({
   providedIn: 'root'
 })
-export class SignalsApp {
+export class SignalApp {
 
   public selectedTag = signal<Tag | null>(null);
   public selectedWorkspace = signal<Workspace | null>(null);
@@ -21,6 +20,5 @@ export class SignalsApp {
   public showWorkspaceAddMember = signal<boolean>(false);
 
   public message = signal<any>(null);
-
 
 }

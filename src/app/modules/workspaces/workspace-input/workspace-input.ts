@@ -1,7 +1,8 @@
 import {Component, effect, inject} from '@angular/core';
-import {SignalsApp} from '../../../services/signals-app';
+import {SignalApp} from '../../../services/signal-app';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {Workspace, WorkspaceClient} from '../../../services/clients/workspace-client';
+import {HttpApp, RequestData} from '../../../services/http-app';
+import {CreateResponse, Workspace} from '../../../application/objects';
 
 @Component({
   selector: 'app-workspace-input',
@@ -12,8 +13,9 @@ import {Workspace, WorkspaceClient} from '../../../services/clients/workspace-cl
 
 export class WorkspaceInput {
 
-  private workspaceClient = inject(WorkspaceClient);
-  protected signalApp = inject(SignalsApp);
+  private workspacePath: string = "/workspaces";
+  private httpApp = inject(HttpApp);
+  protected signalApp = inject(SignalApp);
 
   protected visible: boolean = false;
   protected formGroup!: FormGroup;
@@ -66,9 +68,11 @@ export class WorkspaceInput {
 
     try {
       if (formValue.id) {
-        await this.workspaceClient.updateAsync(formValue.id.toString(), formValue);
+        let requestData = new RequestData(this.workspacePath + "/" + formValue.id, formValue);
+        await this.httpApp.putAsync<void>(requestData);
       } else {
-        await this.workspaceClient.saveAsync(formValue);
+        let requestData = new RequestData(this.workspacePath, formValue);
+        await this.httpApp.postAsync<CreateResponse>(requestData);
       }
       this.signalApp.refreshWorkspace.set(true);
       this.closeDialog();

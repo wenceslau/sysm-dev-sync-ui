@@ -1,5 +1,4 @@
-import {Component, inject, signal} from '@angular/core';
-import {SignalApp} from './services/signal-app';
+import {Component, signal} from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -9,5 +8,4 @@ import {SignalApp} from './services/signal-app';
 })
 export class App {
   protected readonly title = signal('sysm-dev-sync-ui');
-  protected signalsApp = inject(SignalApp);
 }

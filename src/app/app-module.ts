@@ -59,6 +59,9 @@ import {FormInput} from './modules/tags/form-input/form-input';
 import {WorkspaceInput} from './modules/workspaces/workspace-input/workspace-input';
 import {WorkspaceAddMember} from './modules/workspaces/workspace-add-member/workspace-add-member';
 import {ProjectInput} from './modules/projects/project-input/project-input';
+import { Layout } from './application/layout/layout';
+import { Login } from './application/login/login';
+import { Callback } from './security/callback/callback';
 
 const MyPreset = definePreset(Aura, {
   semantic: {
@@ -93,6 +96,9 @@ const MyPreset = definePreset(Aura, {
     WorkspaceInput,
     WorkspaceAddMember,
     ProjectInput,
+    Layout,
+    Login,
+    Callback,
   ],
   imports: [
     BrowserModule,

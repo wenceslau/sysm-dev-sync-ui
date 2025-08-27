@@ -6,35 +6,26 @@ import {Questions} from './modules/questions/questions';
 import {Projects} from './modules/projects/projects';
 import {Users} from './modules/users/users';
 import {Home} from './application/home/home';
+import {Login} from './application/login/login';
+import {Layout} from './application/layout/layout';
+import {AuthGuard} from './security/auth-guard';
+import {Callback} from './security/callback/callback';
 
 const routes: Routes = [
+  {path: 'login', component: Login},
+  {path: 'callback', component: Callback},
   {
     path: '',
-    component: Home
-  },
-  {
-    path: 'home',
-    component: Home
-  },
-  {
-    path: 'question',
-    component: Questions
-  },
-  {
-    path: 'project',
-    component: Projects
-  },
-  {
-    path: 'workspace',
-    component: Workspaces
-  },
-  {
-    path: 'tag',
-    component: Tags
-  },
-  {
-    path: 'user',
-    component: Users
+    component: Layout,
+    canActivate: [AuthGuard],
+    children: [
+      {path: '', component: Home},
+      {path: 'tags', component: Tags},
+      {path: 'workspaces', component: Workspaces},
+      {path: 'questions', component: Questions},
+      {path: 'projects', component: Projects},
+      {path: 'users', component: Users},
+    ]
   }
 ];
 
